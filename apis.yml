@@ -1,0 +1,14 @@
+name: Porter
+description: A package manager for Kubernetes that uses Cloud Native Application Bundles
+  (CNAB) to package and deploy applications along with their dependencies and configuration.
+url: https://porter.sh/
+tags:
+- Kubernetes
+- Package Manager
+- CNAB
+- DevOps
+- Cloud Native
+created: '2025'
+modified: '2025'
+apis: []
+common: []
