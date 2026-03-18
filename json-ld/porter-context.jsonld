@@ -1,0 +1,189 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "porter": "https://porter.sh/vocabulary#",
+    "cnab": "https://cnab.io/vocabulary#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "prov": "http://www.w3.org/ns/prov#",
+
+    "Bundle": {
+      "@id": "cnab:Bundle",
+      "@context": {
+        "name": "schema:name",
+        "version": "schema:version",
+        "description": "schema:description",
+        "registry": {
+          "@id": "porter:registry",
+          "@type": "@id"
+        },
+        "reference": {
+          "@id": "porter:ociReference",
+          "@type": "@id"
+        },
+        "maintainers": {
+          "@id": "schema:maintainer",
+          "@container": "@set"
+        },
+        "labels": "porter:labels",
+        "parameters": {
+          "@id": "porter:parameters",
+          "@container": "@set"
+        },
+        "credentials": {
+          "@id": "porter:credentials",
+          "@container": "@set"
+        },
+        "outputs": {
+          "@id": "porter:outputs",
+          "@container": "@set"
+        },
+        "dependencies": "porter:dependencies"
+      }
+    },
+
+    "Installation": {
+      "@id": "porter:Installation",
+      "@context": {
+        "id": "@id",
+        "name": "schema:name",
+        "namespace": "porter:namespace",
+        "bundle": {
+          "@id": "porter:bundleReference",
+          "@type": "@id"
+        },
+        "status": "porter:installationStatus",
+        "createdAt": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "updatedAt": {
+          "@id": "dcterms:modified",
+          "@type": "xsd:dateTime"
+        },
+        "labels": "porter:labels",
+        "credentialSets": {
+          "@id": "porter:credentialSets",
+          "@container": "@set"
+        },
+        "parameterSets": {
+          "@id": "porter:parameterSets",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "Run": {
+      "@id": "porter:Run",
+      "@context": {
+        "id": "@id",
+        "installation": {
+          "@id": "porter:installation",
+          "@type": "@id"
+        },
+        "bundle": {
+          "@id": "porter:bundleReference",
+          "@type": "@id"
+        },
+        "action": "porter:bundleAction",
+        "result": "porter:runResult",
+        "startedAt": {
+          "@id": "prov:startedAtTime",
+          "@type": "xsd:dateTime"
+        },
+        "completedAt": {
+          "@id": "prov:endedAtTime",
+          "@type": "xsd:dateTime"
+        }
+      }
+    },
+
+    "CredentialSet": {
+      "@id": "porter:CredentialSet",
+      "@context": {
+        "name": "schema:name",
+        "namespace": "porter:namespace",
+        "credentials": {
+          "@id": "porter:credentialMappings",
+          "@container": "@set"
+        },
+        "labels": "porter:labels",
+        "createdAt": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "updatedAt": {
+          "@id": "dcterms:modified",
+          "@type": "xsd:dateTime"
+        }
+      }
+    },
+
+    "ParameterSet": {
+      "@id": "porter:ParameterSet",
+      "@context": {
+        "name": "schema:name",
+        "namespace": "porter:namespace",
+        "parameters": {
+          "@id": "porter:parameterMappings",
+          "@container": "@set"
+        },
+        "labels": "porter:labels",
+        "createdAt": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "updatedAt": {
+          "@id": "dcterms:modified",
+          "@type": "xsd:dateTime"
+        }
+      }
+    },
+
+    "Parameter": {
+      "@id": "porter:Parameter",
+      "@context": {
+        "name": "schema:name",
+        "description": "schema:description",
+        "type": "schema:DataType",
+        "required": "porter:isRequired",
+        "sensitive": "porter:isSensitive",
+        "default": "schema:defaultValue"
+      }
+    },
+
+    "Credential": {
+      "@id": "porter:Credential",
+      "@context": {
+        "name": "schema:name",
+        "description": "schema:description",
+        "required": "porter:isRequired"
+      }
+    },
+
+    "Output": {
+      "@id": "porter:Output",
+      "@context": {
+        "name": "schema:name",
+        "description": "schema:description",
+        "type": "schema:DataType",
+        "sensitive": "porter:isSensitive",
+        "value": "rdf:value"
+      }
+    },
+
+    "Mixin": {
+      "@id": "porter:Mixin",
+      "@context": {
+        "name": "schema:name",
+        "description": "schema:description",
+        "version": "schema:version",
+        "url": {
+          "@id": "schema:url",
+          "@type": "@id"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1119 @@
+openapi: 3.1.0
+info:
+  title: Porter Bundle API
+  description: >-
+    The Porter Bundle API provides programmatic access to managing Cloud Native
+    Application Bundles (CNAB) using Porter. It supports listing and inspecting
+    bundles, managing installations, handling credential sets and parameter sets,
+    and querying installation runs and outputs. Porter implements the CNAB spec
+    for packaging applications with their dependencies into distributable installers.
+  version: '1.0.0'
+  contact:
+    name: Porter Community
+    url: https://porter.sh/community/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+externalDocs:
+  description: Porter Documentation
+  url: https://porter.sh/docs/
+servers:
+  - url: http://localhost:3000
+    description: Porter local server (porter server)
+security:
+  - bearerAuth: []
+tags:
+  - name: Bundles
+    description: >-
+      Operations for searching, inspecting, and managing CNAB bundles published
+      to OCI registries.
+  - name: Installations
+    description: >-
+      Operations for managing bundle installations, including install, upgrade,
+      invoke, and uninstall lifecycle actions.
+  - name: CredentialSets
+    description: >-
+      Operations for managing credential sets that supply secret values to
+      bundle executions.
+  - name: ParameterSets
+    description: >-
+      Operations for managing parameter sets that supply configuration values
+      to bundle executions.
+  - name: Runs
+    description: >-
+      Operations for querying the history of bundle action executions and their
+      outputs.
+paths:
+  /v1/bundles:
+    get:
+      operationId: listBundles
+      summary: List bundles
+      description: >-
+        Returns a list of bundles that have been published to or pulled from
+        OCI registries and are known to Porter. Results can be filtered by
+        namespace and name.
+      tags:
+        - Bundles
+      parameters:
+        - $ref: '#/components/parameters/namespace'
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/skip'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: List of bundles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BundleListResponse'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /v1/bundles/{namespace}/{name}:
+    get:
+      operationId: getBundle
+      summary: Get a bundle
+      description: >-
+        Returns metadata and the full bundle definition for a specific bundle
+        version, including its actions, parameters, credentials, outputs, and
+        dependencies.
+      tags:
+        - Bundles
+      parameters:
+        - $ref: '#/components/parameters/namespace_path'
+        - $ref: '#/components/parameters/name_path'
+        - name: version
+          in: query
+          required: false
+          description: Specific version of the bundle to retrieve. Defaults to latest.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Bundle details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Bundle not found
+  /v1/installations:
+    get:
+      operationId: listInstallations
+      summary: List installations
+      description: >-
+        Returns all bundle installations managed by Porter. An installation
+        represents a named instance of a bundle that has been installed and
+        tracks the full lifecycle history of that instance.
+      tags:
+        - Installations
+      parameters:
+        - $ref: '#/components/parameters/namespace'
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/skip'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: List of installations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstallationListResponse'
+        '401':
+          description: Unauthorized
+    post:
+      operationId: createInstallation
+      summary: Create an installation
+      description: >-
+        Creates a new installation record for a bundle. After creating the
+        installation record, trigger an install action using the run endpoint.
+      tags:
+        - Installations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInstallationRequest'
+      responses:
+        '201':
+          description: Installation created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Installation'
+        '400':
+          description: Invalid installation specification
+        '401':
+          description: Unauthorized
+        '409':
+          description: Installation already exists
+  /v1/installations/{namespace}/{name}:
+    get:
+      operationId: getInstallation
+      summary: Get an installation
+      description: >-
+        Returns the current state and metadata of a specific installation,
+        including its bundle reference, last action status, outputs, and
+        run history summary.
+      tags:
+        - Installations
+      parameters:
+        - $ref: '#/components/parameters/namespace_path'
+        - $ref: '#/components/parameters/name_path'
+      responses:
+        '200':
+          description: Installation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Installation'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Installation not found
+    patch:
+      operationId: patchInstallation
+      summary: Update an installation
+      description: >-
+        Partially updates the installation's configuration such as bundle
+        reference, parameters, credentials, or labels.
+      tags:
+        - Installations
+      parameters:
+        - $ref: '#/components/parameters/namespace_path'
+        - $ref: '#/components/parameters/name_path'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchInstallationRequest'
+      responses:
+        '200':
+          description: Installation updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Installation'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Installation not found
+    delete:
+      operationId: deleteInstallation
+      summary: Delete an installation
+      description: >-
+        Deletes the installation record and all associated run history. This
+        does not execute an uninstall action on the underlying resources.
+      tags:
+        - Installations
+      parameters:
+        - $ref: '#/components/parameters/namespace_path'
+        - $ref: '#/components/parameters/name_path'
+      responses:
+        '204':
+          description: Installation deleted
+        '401':
+          description: Unauthorized
+        '404':
+          description: Installation not found
+  /v1/installations/{namespace}/{name}/runs:
+    get:
+      operationId: listInstallationRuns
+      summary: List runs for an installation
+      description: >-
+        Returns the history of all bundle action executions for a specific
+        installation, ordered from most recent to oldest. Each run captures
+        the action performed, the result, and timing information.
+      tags:
+        - Runs
+      parameters:
+        - $ref: '#/components/parameters/namespace_path'
+        - $ref: '#/components/parameters/name_path'
+        - $ref: '#/components/parameters/skip'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: List of runs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunListResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Installation not found
+  /v1/installations/{namespace}/{name}/runs/{run_id}:
+    get:
+      operationId: getInstallationRun
+      summary: Get a specific run
+      description: >-
+        Returns details of a single bundle action execution including the
+        bundle action performed, parameters and credentials used, result
+        status, and any outputs produced.
+      tags:
+        - Runs
+      parameters:
+        - $ref: '#/components/parameters/namespace_path'
+        - $ref: '#/components/parameters/name_path'
+        - $ref: '#/components/parameters/run_id'
+      responses:
+        '200':
+          description: Run details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Run'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Run not found
+  /v1/installations/{namespace}/{name}/runs/{run_id}/outputs:
+    get:
+      operationId: listRunOutputs
+      summary: List outputs for a run
+      description: >-
+        Returns all outputs produced during a specific bundle action execution.
+        Outputs are values defined in the bundle that are written during an
+        action and can be referenced by dependent bundles or inspected by users.
+      tags:
+        - Runs
+      parameters:
+        - $ref: '#/components/parameters/namespace_path'
+        - $ref: '#/components/parameters/name_path'
+        - $ref: '#/components/parameters/run_id'
+      responses:
+        '200':
+          description: List of outputs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutputListResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Run not found
+  /v1/credentialsets:
+    get:
+      operationId: listCredentialSets
+      summary: List credential sets
+      description: >-
+        Returns all credential sets managed by Porter. A credential set maps
+        bundle credential names to their sources, such as environment variables,
+        files, or secret store references.
+      tags:
+        - CredentialSets
+      parameters:
+        - $ref: '#/components/parameters/namespace'
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/skip'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: List of credential sets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialSetListResponse'
+        '401':
+          description: Unauthorized
+    post:
+      operationId: createCredentialSet
+      summary: Create a credential set
+      description: >-
+        Creates a new credential set defining how bundle credential names are
+        resolved at execution time from sources such as environment variables,
+        files, or secret store integrations.
+      tags:
+        - CredentialSets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialSet'
+      responses:
+        '201':
+          description: Credential set created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialSet'
+        '400':
+          description: Invalid credential set specification
+        '401':
+          description: Unauthorized
+        '409':
+          description: Credential set already exists
+  /v1/credentialsets/{namespace}/{name}:
+    get:
+      operationId: getCredentialSet
+      summary: Get a credential set
+      description: >-
+        Returns the specified credential set including its credential mappings.
+        Secret values are never included in responses.
+      tags:
+        - CredentialSets
+      parameters:
+        - $ref: '#/components/parameters/namespace_path'
+        - $ref: '#/components/parameters/name_path'
+      responses:
+        '200':
+          description: Credential set details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialSet'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Credential set not found
+    put:
+      operationId: updateCredentialSet
+      summary: Update a credential set
+      description: >-
+        Replaces the credential mappings in a credential set with the provided
+        definition.
+      tags:
+        - CredentialSets
+      parameters:
+        - $ref: '#/components/parameters/namespace_path'
+        - $ref: '#/components/parameters/name_path'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialSet'
+      responses:
+        '200':
+          description: Credential set updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialSet'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Credential set not found
+    delete:
+      operationId: deleteCredentialSet
+      summary: Delete a credential set
+      description: >-
+        Deletes the specified credential set. Installations referencing this
+        credential set will fail if they are re-run.
+      tags:
+        - CredentialSets
+      parameters:
+        - $ref: '#/components/parameters/namespace_path'
+        - $ref: '#/components/parameters/name_path'
+      responses:
+        '204':
+          description: Credential set deleted
+        '401':
+          description: Unauthorized
+        '404':
+          description: Credential set not found
+  /v1/parametersets:
+    get:
+      operationId: listParameterSets
+      summary: List parameter sets
+      description: >-
+        Returns all parameter sets managed by Porter. A parameter set maps
+        bundle parameter names to their sources, enabling reuse of parameter
+        configurations across multiple bundle installations.
+      tags:
+        - ParameterSets
+      parameters:
+        - $ref: '#/components/parameters/namespace'
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/skip'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: List of parameter sets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterSetListResponse'
+        '401':
+          description: Unauthorized
+    post:
+      operationId: createParameterSet
+      summary: Create a parameter set
+      description: >-
+        Creates a new parameter set defining how bundle parameter names are
+        resolved at execution time.
+      tags:
+        - ParameterSets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParameterSet'
+      responses:
+        '201':
+          description: Parameter set created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterSet'
+        '400':
+          description: Invalid parameter set specification
+        '401':
+          description: Unauthorized
+  /v1/parametersets/{namespace}/{name}:
+    get:
+      operationId: getParameterSet
+      summary: Get a parameter set
+      description: >-
+        Returns the specified parameter set including its parameter mappings.
+        Sensitive parameter values sourced from secret stores are not included
+        in responses.
+      tags:
+        - ParameterSets
+      parameters:
+        - $ref: '#/components/parameters/namespace_path'
+        - $ref: '#/components/parameters/name_path'
+      responses:
+        '200':
+          description: Parameter set details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterSet'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Parameter set not found
+    delete:
+      operationId: deleteParameterSet
+      summary: Delete a parameter set
+      description: >-
+        Deletes the specified parameter set. Installations referencing this
+        parameter set will need to be updated before re-running.
+      tags:
+        - ParameterSets
+      parameters:
+        - $ref: '#/components/parameters/namespace_path'
+        - $ref: '#/components/parameters/name_path'
+      responses:
+        '204':
+          description: Parameter set deleted
+        '401':
+          description: Unauthorized
+        '404':
+          description: Parameter set not found
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token for authenticating to the Porter server API.
+  parameters:
+    namespace:
+      name: namespace
+      in: query
+      required: false
+      description: >-
+        Porter namespace to scope the query to. Defaults to the current
+        namespace configured in Porter's context.
+      schema:
+        type: string
+    name:
+      name: name
+      in: query
+      required: false
+      description: Filter results by resource name.
+      schema:
+        type: string
+    namespace_path:
+      name: namespace
+      in: path
+      required: true
+      description: Porter namespace of the resource.
+      schema:
+        type: string
+    name_path:
+      name: name
+      in: path
+      required: true
+      description: Name of the resource.
+      schema:
+        type: string
+    run_id:
+      name: run_id
+      in: path
+      required: true
+      description: Unique identifier of the run.
+      schema:
+        type: string
+    skip:
+      name: skip
+      in: query
+      required: false
+      description: Number of records to skip for pagination.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
+  schemas:
+    Bundle:
+      type: object
+      description: >-
+        A Cloud Native Application Bundle (CNAB) known to Porter, including its
+        metadata, actions, parameters, credentials, outputs, and dependencies.
+      properties:
+        name:
+          type: string
+          description: Name of the bundle.
+        version:
+          type: string
+          description: Semantic version of the bundle.
+        description:
+          type: string
+          description: Human-readable description of what the bundle installs.
+        registry:
+          type: string
+          description: OCI registry where the bundle is published.
+        reference:
+          type: string
+          description: >-
+            Full OCI reference to the bundle image, including registry, name,
+            and tag.
+          example: ghcr.io/getporter/examples/porter-hello:v0.2.0
+        actions:
+          type: object
+          description: Custom actions defined by the bundle in addition to the standard CNAB actions.
+          additionalProperties:
+            $ref: '#/components/schemas/BundleAction'
+        parameters:
+          type: object
+          description: Parameter definitions for configuring the bundle at execution time.
+          additionalProperties:
+            $ref: '#/components/schemas/BundleParameter'
+        credentials:
+          type: object
+          description: Credential definitions required by the bundle.
+          additionalProperties:
+            $ref: '#/components/schemas/BundleCredential'
+        outputs:
+          type: object
+          description: Output definitions for values produced by the bundle.
+          additionalProperties:
+            $ref: '#/components/schemas/BundleOutput'
+        dependencies:
+          type: object
+          description: Dependencies on other bundles required by this bundle.
+          additionalProperties:
+            $ref: '#/components/schemas/BundleDependency'
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          description: Arbitrary labels for the bundle.
+    BundleListResponse:
+      type: object
+      description: Paginated list of bundles.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Bundle'
+        total:
+          type: integer
+          description: Total number of matching bundles.
+    BundleAction:
+      type: object
+      description: A custom action defined by the bundle.
+      properties:
+        description:
+          type: string
+          description: Description of what this action does.
+        modifies:
+          type: boolean
+          description: If true, the action modifies the installation state.
+        stateless:
+          type: boolean
+          description: If true, the action does not require an existing installation.
+    BundleParameter:
+      type: object
+      description: A parameter that can be passed to the bundle at execution time.
+      properties:
+        type:
+          type: string
+          description: JSON Schema type of the parameter.
+        description:
+          type: string
+          description: Description of the parameter's purpose.
+        required:
+          type: boolean
+          description: Whether the parameter is required.
+        default:
+          description: Default value for the parameter.
+        sensitive:
+          type: boolean
+          description: If true, the parameter value contains sensitive data.
+        enum:
+          type: array
+          description: Allowed values for the parameter.
+          items: {}
+    BundleCredential:
+      type: object
+      description: A credential required by the bundle for accessing external resources.
+      properties:
+        description:
+          type: string
+          description: Description of what this credential is used for.
+        required:
+          type: boolean
+          description: Whether the credential is required.
+        path:
+          type: string
+          description: File path where the credential is written inside the bundle container.
+        env:
+          type: string
+          description: Environment variable name where the credential is injected.
+    BundleOutput:
+      type: object
+      description: An output value produced by the bundle during an action.
+      properties:
+        type:
+          type: string
+          description: JSON Schema type of the output value.
+        description:
+          type: string
+          description: Description of the output's purpose.
+        sensitive:
+          type: boolean
+          description: If true, the output contains sensitive data.
+        path:
+          type: string
+          description: File path inside the bundle container where the output is written.
+    BundleDependency:
+      type: object
+      description: A dependency on another bundle that must be installed first.
+      properties:
+        bundle:
+          type: string
+          description: OCI reference to the dependent bundle.
+        version:
+          type: string
+          description: Version constraint for the dependency.
+    Installation:
+      type: object
+      description: >-
+        A named instance of a bundle that has been installed and is tracked by
+        Porter. Captures the full lifecycle state of a bundle deployment.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this installation.
+        name:
+          type: string
+          description: Name of the installation, unique within its namespace.
+        namespace:
+          type: string
+          description: Porter namespace this installation belongs to.
+        bundle:
+          type: object
+          description: Reference to the bundle that was installed.
+          properties:
+            repository:
+              type: string
+              description: OCI repository of the bundle.
+            version:
+              type: string
+              description: Version of the bundle installed.
+            digest:
+              type: string
+              description: OCI digest of the bundle image.
+        status:
+          $ref: '#/components/schemas/InstallationStatus'
+        parameters:
+          type: object
+          description: Parameter values provided to the installation.
+          additionalProperties: {}
+        credentialSets:
+          type: array
+          description: Names of credential sets used by this installation.
+          items:
+            type: string
+        parameterSets:
+          type: array
+          description: Names of parameter sets used by this installation.
+          items:
+            type: string
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          description: Labels for categorizing or filtering this installation.
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
+          description: Annotations for storing arbitrary metadata.
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the installation was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the installation was last updated.
+    InstallationStatus:
+      type: object
+      description: Current state of an installation.
+      properties:
+        runID:
+          type: string
+          description: ID of the most recent run.
+        action:
+          type: string
+          description: Most recently executed action.
+          enum:
+            - install
+            - upgrade
+            - invoke
+            - uninstall
+        result:
+          type: string
+          description: Result of the most recent action.
+          enum:
+            - succeeded
+            - failed
+            - running
+            - pending
+            - cancelled
+        bundleReference:
+          type: string
+          description: OCI reference to the bundle used in the most recent run.
+        created:
+          type: string
+          format: date-time
+          description: When the installation was first created.
+        modified:
+          type: string
+          format: date-time
+          description: When the installation status was last updated.
+    InstallationListResponse:
+      type: object
+      description: Paginated list of installations.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Installation'
+        total:
+          type: integer
+          description: Total number of matching installations.
+    CreateInstallationRequest:
+      type: object
+      description: Request body for creating a new installation.
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Name of the installation.
+        namespace:
+          type: string
+          description: Porter namespace for the installation.
+        bundle:
+          type: object
+          description: Bundle reference for the installation.
+          properties:
+            repository:
+              type: string
+            version:
+              type: string
+        parameters:
+          type: object
+          additionalProperties: {}
+          description: Parameter values for the installation.
+        credentialSets:
+          type: array
+          items:
+            type: string
+        parameterSets:
+          type: array
+          items:
+            type: string
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+    PatchInstallationRequest:
+      type: object
+      description: Request body for partially updating an installation.
+      properties:
+        bundle:
+          type: object
+          properties:
+            repository:
+              type: string
+            version:
+              type: string
+        parameters:
+          type: object
+          additionalProperties: {}
+        credentialSets:
+          type: array
+          items:
+            type: string
+        parameterSets:
+          type: array
+          items:
+            type: string
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+    Run:
+      type: object
+      description: >-
+        A record of a single bundle action execution for an installation,
+        capturing the action taken, parameters and credentials used, result,
+        and timing.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this run.
+        installation:
+          type: string
+          description: Name of the installation this run belongs to.
+        namespace:
+          type: string
+          description: Porter namespace of the installation.
+        bundle:
+          type: string
+          description: OCI reference to the bundle used in this run.
+        action:
+          type: string
+          description: Bundle action executed in this run.
+          enum:
+            - install
+            - upgrade
+            - invoke
+            - uninstall
+        parameters:
+          type: object
+          description: Parameter values used during this run.
+          additionalProperties: {}
+        credentialSets:
+          type: array
+          description: Credential sets used during this run.
+          items:
+            type: string
+        parameterSets:
+          type: array
+          description: Parameter sets used during this run.
+          items:
+            type: string
+        result:
+          type: string
+          description: Outcome of the run.
+          enum:
+            - succeeded
+            - failed
+            - running
+            - pending
+            - cancelled
+        startedAt:
+          type: string
+          format: date-time
+          description: When the run started.
+        completedAt:
+          type: string
+          format: date-time
+          description: When the run completed.
+    RunListResponse:
+      type: object
+      description: Paginated list of runs.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Run'
+        total:
+          type: integer
+    OutputListResponse:
+      type: object
+      description: List of outputs from a bundle run.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Output'
+    Output:
+      type: object
+      description: A named output value produced by a bundle action execution.
+      properties:
+        name:
+          type: string
+          description: Name of the output as defined in the bundle.
+        type:
+          type: string
+          description: JSON Schema type of the output value.
+        sensitive:
+          type: boolean
+          description: Whether the output contains sensitive data.
+        value:
+          description: The output value. Absent for sensitive outputs.
+        runID:
+          type: string
+          description: ID of the run that produced this output.
+    CredentialSet:
+      type: object
+      description: >-
+        A named collection of credential mappings that resolve bundle credential
+        names to their runtime sources such as environment variables, files, or
+        secret store entries.
+      required:
+        - name
+        - credentials
+      properties:
+        name:
+          type: string
+          description: Name of the credential set.
+        namespace:
+          type: string
+          description: Porter namespace this credential set belongs to.
+        credentials:
+          type: array
+          description: List of credential mappings.
+          items:
+            $ref: '#/components/schemas/CredentialMapping'
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          description: Labels for categorizing the credential set.
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the credential set was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the credential set was last updated.
+    CredentialMapping:
+      type: object
+      description: Maps a bundle credential name to its runtime source.
+      required:
+        - name
+        - source
+      properties:
+        name:
+          type: string
+          description: Name of the bundle credential this mapping applies to.
+        source:
+          $ref: '#/components/schemas/ValueSource'
+    CredentialSetListResponse:
+      type: object
+      description: Paginated list of credential sets.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CredentialSet'
+        total:
+          type: integer
+    ParameterSet:
+      type: object
+      description: >-
+        A named collection of parameter mappings that resolve bundle parameter
+        names to their runtime sources, enabling reuse across installations.
+      required:
+        - name
+        - parameters
+      properties:
+        name:
+          type: string
+          description: Name of the parameter set.
+        namespace:
+          type: string
+          description: Porter namespace this parameter set belongs to.
+        parameters:
+          type: array
+          description: List of parameter mappings.
+          items:
+            $ref: '#/components/schemas/ParameterMapping'
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          description: Labels for categorizing the parameter set.
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the parameter set was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the parameter set was last updated.
+    ParameterMapping:
+      type: object
+      description: Maps a bundle parameter name to its runtime source.
+      required:
+        - name
+        - source
+      properties:
+        name:
+          type: string
+          description: Name of the bundle parameter this mapping applies to.
+        source:
+          $ref: '#/components/schemas/ValueSource'
+    ParameterSetListResponse:
+      type: object
+      description: Paginated list of parameter sets.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParameterSet'
+        total:
+          type: integer
+    ValueSource:
+      type: object
+      description: >-
+        Defines where a credential or parameter value is sourced from at
+        execution time. Exactly one of the source fields should be set.
+      properties:
+        env:
+          type: string
+          description: Name of an environment variable providing the value.
+        path:
+          type: string
+          description: Absolute path to a file providing the value.
+        value:
+          type: string
+          description: A literal string value.
+        secret:
+          type: string
+          description: >-
+            Reference to a secret in the configured secret store plugin,
+            such as a secret name in HashiCorp Vault or Azure Key Vault.
+        command:
+          type: string
+          description: Shell command whose stdout provides the value.
