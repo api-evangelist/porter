@@ -1,13 +1,12 @@
 name: Porter
-description: A package manager for Kubernetes that uses Cloud Native Application Bundles
-  (CNAB) to package and deploy applications along with their dependencies and configuration.
+description: A package manager for Kubernetes that uses Cloud Native Application Bundles (CNAB) to package and deploy applications along with their dependencies and configuration.
 url: https://porter.sh/
 tags:
-- Kubernetes
-- Package Manager
-- CNAB
-- DevOps
-- Cloud Native
+  - Cloud Native
+  - CNAB
+  - DevOps
+  - Kubernetes
+  - Package Manager
 created: '2025'
 modified: '2026-03-18'
 apis:
@@ -21,11 +20,11 @@ apis:
     humanURL: https://porter.sh/docs/
     baseURL: https://porter.sh
     tags:
+      - Cloud Native
       - CNAB
+      - DevOps
       - Kubernetes
       - Package Manager
-      - Cloud Native
-      - DevOps
     properties:
       - type: Documentation
         url: https://porter.sh/docs/
@@ -46,10 +45,10 @@ apis:
     baseURL: https://porter.sh
     tags:
       - CNAB
+      - DevOps
+      - Extensions
       - Mixins
       - Plugins
-      - Extensions
-      - DevOps
     properties:
       - type: Documentation
         url: https://porter.sh/mixins/
@@ -65,11 +64,11 @@ apis:
     humanURL: https://porter.sh/docs/introduction/concepts-and-components/mixins-vs-plugins/
     baseURL: https://porter.sh
     tags:
-      - CNAB
-      - Plugins
-      - Extensions
       - Cloud Native
+      - CNAB
       - DevOps
+      - Extensions
+      - Plugins
     properties:
       - type: Documentation
         url: https://porter.sh/docs/introduction/concepts-and-components/mixins-vs-plugins/

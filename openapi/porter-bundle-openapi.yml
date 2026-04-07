@@ -27,14 +27,14 @@ tags:
     description: >-
       Operations for searching, inspecting, and managing CNAB bundles published
       to OCI registries.
-  - name: Installations
-    description: >-
-      Operations for managing bundle installations, including install, upgrade,
-      invoke, and uninstall lifecycle actions.
   - name: CredentialSets
     description: >-
       Operations for managing credential sets that supply secret values to
       bundle executions.
+  - name: Installations
+    description: >-
+      Operations for managing bundle installations, including install, upgrade,
+      invoke, and uninstall lifecycle actions.
   - name: ParameterSets
     description: >-
       Operations for managing parameter sets that supply configuration values
