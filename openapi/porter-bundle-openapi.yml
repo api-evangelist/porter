@@ -47,7 +47,7 @@ paths:
   /v1/bundles:
     get:
       operationId: listBundles
-      summary: List bundles
+      summary: Porter List bundles
       description: >-
         Returns a list of bundles that have been published to or pulled from
         OCI registries and are known to Porter. Results can be filtered by
@@ -73,7 +73,7 @@ paths:
   /v1/bundles/{namespace}/{name}:
     get:
       operationId: getBundle
-      summary: Get a bundle
+      summary: Porter Get a bundle
       description: >-
         Returns metadata and the full bundle definition for a specific bundle
         version, including its actions, parameters, credentials, outputs, and
@@ -103,7 +103,7 @@ paths:
   /v1/installations:
     get:
       operationId: listInstallations
-      summary: List installations
+      summary: Porter List installations
       description: >-
         Returns all bundle installations managed by Porter. An installation
         represents a named instance of a bundle that has been installed and
@@ -126,7 +126,7 @@ paths:
           description: Unauthorized
     post:
       operationId: createInstallation
-      summary: Create an installation
+      summary: Porter Create an installation
       description: >-
         Creates a new installation record for a bundle. After creating the
         installation record, trigger an install action using the run endpoint.
@@ -154,7 +154,7 @@ paths:
   /v1/installations/{namespace}/{name}:
     get:
       operationId: getInstallation
-      summary: Get an installation
+      summary: Porter Get an installation
       description: >-
         Returns the current state and metadata of a specific installation,
         including its bundle reference, last action status, outputs, and
@@ -177,7 +177,7 @@ paths:
           description: Installation not found
     patch:
       operationId: patchInstallation
-      summary: Update an installation
+      summary: Porter Update an installation
       description: >-
         Partially updates the installation's configuration such as bundle
         reference, parameters, credentials, or labels.
@@ -207,7 +207,7 @@ paths:
           description: Installation not found
     delete:
       operationId: deleteInstallation
-      summary: Delete an installation
+      summary: Porter Delete an installation
       description: >-
         Deletes the installation record and all associated run history. This
         does not execute an uninstall action on the underlying resources.
@@ -226,7 +226,7 @@ paths:
   /v1/installations/{namespace}/{name}/runs:
     get:
       operationId: listInstallationRuns
-      summary: List runs for an installation
+      summary: Porter List runs for an installation
       description: >-
         Returns the history of all bundle action executions for a specific
         installation, ordered from most recent to oldest. Each run captures
@@ -252,7 +252,7 @@ paths:
   /v1/installations/{namespace}/{name}/runs/{run_id}:
     get:
       operationId: getInstallationRun
-      summary: Get a specific run
+      summary: Porter Get a specific run
       description: >-
         Returns details of a single bundle action execution including the
         bundle action performed, parameters and credentials used, result
@@ -277,7 +277,7 @@ paths:
   /v1/installations/{namespace}/{name}/runs/{run_id}/outputs:
     get:
       operationId: listRunOutputs
-      summary: List outputs for a run
+      summary: Porter List outputs for a run
       description: >-
         Returns all outputs produced during a specific bundle action execution.
         Outputs are values defined in the bundle that are written during an
@@ -302,7 +302,7 @@ paths:
   /v1/credentialsets:
     get:
       operationId: listCredentialSets
-      summary: List credential sets
+      summary: Porter List credential sets
       description: >-
         Returns all credential sets managed by Porter. A credential set maps
         bundle credential names to their sources, such as environment variables,
@@ -325,7 +325,7 @@ paths:
           description: Unauthorized
     post:
       operationId: createCredentialSet
-      summary: Create a credential set
+      summary: Porter Create a credential set
       description: >-
         Creates a new credential set defining how bundle credential names are
         resolved at execution time from sources such as environment variables,
@@ -354,7 +354,7 @@ paths:
   /v1/credentialsets/{namespace}/{name}:
     get:
       operationId: getCredentialSet
-      summary: Get a credential set
+      summary: Porter Get a credential set
       description: >-
         Returns the specified credential set including its credential mappings.
         Secret values are never included in responses.
@@ -376,7 +376,7 @@ paths:
           description: Credential set not found
     put:
       operationId: updateCredentialSet
-      summary: Update a credential set
+      summary: Porter Update a credential set
       description: >-
         Replaces the credential mappings in a credential set with the provided
         definition.
@@ -406,7 +406,7 @@ paths:
           description: Credential set not found
     delete:
       operationId: deleteCredentialSet
-      summary: Delete a credential set
+      summary: Porter Delete a credential set
       description: >-
         Deletes the specified credential set. Installations referencing this
         credential set will fail if they are re-run.
@@ -425,7 +425,7 @@ paths:
   /v1/parametersets:
     get:
       operationId: listParameterSets
-      summary: List parameter sets
+      summary: Porter List parameter sets
       description: >-
         Returns all parameter sets managed by Porter. A parameter set maps
         bundle parameter names to their sources, enabling reuse of parameter
@@ -448,7 +448,7 @@ paths:
           description: Unauthorized
     post:
       operationId: createParameterSet
-      summary: Create a parameter set
+      summary: Porter Create a parameter set
       description: >-
         Creates a new parameter set defining how bundle parameter names are
         resolved at execution time.
@@ -474,7 +474,7 @@ paths:
   /v1/parametersets/{namespace}/{name}:
     get:
       operationId: getParameterSet
-      summary: Get a parameter set
+      summary: Porter Get a parameter set
       description: >-
         Returns the specified parameter set including its parameter mappings.
         Sensitive parameter values sourced from secret stores are not included
@@ -497,7 +497,7 @@ paths:
           description: Parameter set not found
     delete:
       operationId: deleteParameterSet
-      summary: Delete a parameter set
+      summary: Porter Delete a parameter set
       description: >-
         Deletes the specified parameter set. Installations referencing this
         parameter set will need to be updated before re-running.
