@@ -1,14 +1,19 @@
+aid: porter
 name: Porter
 description: A package manager for Kubernetes that uses Cloud Native Application Bundles (CNAB) to package and deploy applications along with their dependencies and configuration.
-url: https://porter.sh/
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
   - Cloud Native
   - CNAB
   - DevOps
   - Kubernetes
   - Package Manager
+url: >-
+  https://raw.githubusercontent.com/api-evangelist/porter/refs/heads/main/apis.yml
 created: '2025'
-modified: '2026-03-18'
+modified: '2026-04-28'
+specificationVersion: '0.19'
 apis:
   - aid: porter:porter-bundle-api
     name: Porter Bundle API
