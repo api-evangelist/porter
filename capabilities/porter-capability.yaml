@@ -1,0 +1,614 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Porter Bundle API
+  description: The Porter Bundle API provides programmatic access to managing Cloud Native Application Bundles (CNAB) using
+    Porter. It supports listing and inspecting bundles, managing installations, handling credential sets and parameter sets,
+    and querying installation runs and outputs. Porter implements the CNAB spec for packaging applications with their dependencies
+    into distributable installers.
+  tags:
+  - Porter
+  - API
+  created: '2026-05-06'
+  modified: '2026-05-06'
+capability:
+  consumes:
+  - type: http
+    namespace: porter
+    baseUri: http://localhost:3000
+    description: Porter Bundle API HTTP API.
+    authentication:
+      type: bearer
+      token: '{{PORTER_TOKEN}}'
+    resources:
+    - name: v1-bundles
+      path: /v1/bundles
+      operations:
+      - name: listbundles
+        method: GET
+        description: Porter List bundles
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-bundles-namespace-name
+      path: /v1/bundles/{namespace}/{name}
+      operations:
+      - name: getbundle
+        method: GET
+        description: Porter Get a bundle
+        inputParameters:
+        - name: version
+          in: query
+          type: string
+          description: Specific version of the bundle to retrieve. Defaults to latest.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-installations
+      path: /v1/installations
+      operations:
+      - name: listinstallations
+        method: GET
+        description: Porter List installations
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createinstallation
+        method: POST
+        description: Porter Create an installation
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-installations-namespace-name
+      path: /v1/installations/{namespace}/{name}
+      operations:
+      - name: getinstallation
+        method: GET
+        description: Porter Get an installation
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patchinstallation
+        method: PATCH
+        description: Porter Update an installation
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deleteinstallation
+        method: DELETE
+        description: Porter Delete an installation
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-installations-namespace-name-runs
+      path: /v1/installations/{namespace}/{name}/runs
+      operations:
+      - name: listinstallationruns
+        method: GET
+        description: Porter List runs for an installation
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-installations-namespace-name-runs-run-id
+      path: /v1/installations/{namespace}/{name}/runs/{run_id}
+      operations:
+      - name: getinstallationrun
+        method: GET
+        description: Porter Get a specific run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-installations-namespace-name-runs-run-id-outp
+      path: /v1/installations/{namespace}/{name}/runs/{run_id}/outputs
+      operations:
+      - name: listrunoutputs
+        method: GET
+        description: Porter List outputs for a run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-credentialsets
+      path: /v1/credentialsets
+      operations:
+      - name: listcredentialsets
+        method: GET
+        description: Porter List credential sets
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createcredentialset
+        method: POST
+        description: Porter Create a credential set
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-credentialsets-namespace-name
+      path: /v1/credentialsets/{namespace}/{name}
+      operations:
+      - name: getcredentialset
+        method: GET
+        description: Porter Get a credential set
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updatecredentialset
+        method: PUT
+        description: Porter Update a credential set
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deletecredentialset
+        method: DELETE
+        description: Porter Delete a credential set
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-parametersets
+      path: /v1/parametersets
+      operations:
+      - name: listparametersets
+        method: GET
+        description: Porter List parameter sets
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createparameterset
+        method: POST
+        description: Porter Create a parameter set
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-parametersets-namespace-name
+      path: /v1/parametersets/{namespace}/{name}
+      operations:
+      - name: getparameterset
+        method: GET
+        description: Porter Get a parameter set
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deleteparameterset
+        method: DELETE
+        description: Porter Delete a parameter set
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  exposes:
+  - type: rest
+    port: 8080
+    namespace: porter-rest
+    description: REST adapter for Porter Bundle API.
+    resources:
+    - path: /v1/bundles
+      name: listbundles
+      operations:
+      - method: GET
+        name: listbundles
+        description: Porter List bundles
+        call: porter.listbundles
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/bundles/{namespace}/{name}
+      name: getbundle
+      operations:
+      - method: GET
+        name: getbundle
+        description: Porter Get a bundle
+        call: porter.getbundle
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/installations
+      name: listinstallations
+      operations:
+      - method: GET
+        name: listinstallations
+        description: Porter List installations
+        call: porter.listinstallations
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/installations
+      name: createinstallation
+      operations:
+      - method: POST
+        name: createinstallation
+        description: Porter Create an installation
+        call: porter.createinstallation
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/installations/{namespace}/{name}
+      name: getinstallation
+      operations:
+      - method: GET
+        name: getinstallation
+        description: Porter Get an installation
+        call: porter.getinstallation
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/installations/{namespace}/{name}
+      name: patchinstallation
+      operations:
+      - method: PATCH
+        name: patchinstallation
+        description: Porter Update an installation
+        call: porter.patchinstallation
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/installations/{namespace}/{name}
+      name: deleteinstallation
+      operations:
+      - method: DELETE
+        name: deleteinstallation
+        description: Porter Delete an installation
+        call: porter.deleteinstallation
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/installations/{namespace}/{name}/runs
+      name: listinstallationruns
+      operations:
+      - method: GET
+        name: listinstallationruns
+        description: Porter List runs for an installation
+        call: porter.listinstallationruns
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/installations/{namespace}/{name}/runs/{run_id}
+      name: getinstallationrun
+      operations:
+      - method: GET
+        name: getinstallationrun
+        description: Porter Get a specific run
+        call: porter.getinstallationrun
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/installations/{namespace}/{name}/runs/{run_id}/outputs
+      name: listrunoutputs
+      operations:
+      - method: GET
+        name: listrunoutputs
+        description: Porter List outputs for a run
+        call: porter.listrunoutputs
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/credentialsets
+      name: listcredentialsets
+      operations:
+      - method: GET
+        name: listcredentialsets
+        description: Porter List credential sets
+        call: porter.listcredentialsets
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/credentialsets
+      name: createcredentialset
+      operations:
+      - method: POST
+        name: createcredentialset
+        description: Porter Create a credential set
+        call: porter.createcredentialset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/credentialsets/{namespace}/{name}
+      name: getcredentialset
+      operations:
+      - method: GET
+        name: getcredentialset
+        description: Porter Get a credential set
+        call: porter.getcredentialset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/credentialsets/{namespace}/{name}
+      name: updatecredentialset
+      operations:
+      - method: PUT
+        name: updatecredentialset
+        description: Porter Update a credential set
+        call: porter.updatecredentialset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/credentialsets/{namespace}/{name}
+      name: deletecredentialset
+      operations:
+      - method: DELETE
+        name: deletecredentialset
+        description: Porter Delete a credential set
+        call: porter.deletecredentialset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/parametersets
+      name: listparametersets
+      operations:
+      - method: GET
+        name: listparametersets
+        description: Porter List parameter sets
+        call: porter.listparametersets
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/parametersets
+      name: createparameterset
+      operations:
+      - method: POST
+        name: createparameterset
+        description: Porter Create a parameter set
+        call: porter.createparameterset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/parametersets/{namespace}/{name}
+      name: getparameterset
+      operations:
+      - method: GET
+        name: getparameterset
+        description: Porter Get a parameter set
+        call: porter.getparameterset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/parametersets/{namespace}/{name}
+      name: deleteparameterset
+      operations:
+      - method: DELETE
+        name: deleteparameterset
+        description: Porter Delete a parameter set
+        call: porter.deleteparameterset
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    port: 9090
+    namespace: porter-mcp
+    transport: http
+    description: MCP adapter for Porter Bundle API for AI agent use.
+    tools:
+    - name: listbundles
+      description: Porter List bundles
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: porter.listbundles
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getbundle
+      description: Porter Get a bundle
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: porter.getbundle
+      with:
+        version: tools.version
+      inputParameters:
+      - name: version
+        type: string
+        description: Specific version of the bundle to retrieve. Defaults to latest.
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listinstallations
+      description: Porter List installations
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: porter.listinstallations
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: createinstallation
+      description: Porter Create an installation
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: porter.createinstallation
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getinstallation
+      description: Porter Get an installation
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: porter.getinstallation
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: patchinstallation
+      description: Porter Update an installation
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: porter.patchinstallation
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deleteinstallation
+      description: Porter Delete an installation
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: porter.deleteinstallation
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listinstallationruns
+      description: Porter List runs for an installation
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: porter.listinstallationruns
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getinstallationrun
+      description: Porter Get a specific run
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: porter.getinstallationrun
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listrunoutputs
+      description: Porter List outputs for a run
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: porter.listrunoutputs
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listcredentialsets
+      description: Porter List credential sets
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: porter.listcredentialsets
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: createcredentialset
+      description: Porter Create a credential set
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: porter.createcredentialset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getcredentialset
+      description: Porter Get a credential set
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: porter.getcredentialset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: updatecredentialset
+      description: Porter Update a credential set
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: porter.updatecredentialset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletecredentialset
+      description: Porter Delete a credential set
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: porter.deletecredentialset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listparametersets
+      description: Porter List parameter sets
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: porter.listparametersets
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: createparameterset
+      description: Porter Create a parameter set
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: porter.createparameterset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getparameterset
+      description: Porter Get a parameter set
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: porter.getparameterset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deleteparameterset
+      description: Porter Delete a parameter set
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: porter.deleteparameterset
+      outputParameters:
+      - type: object
+        mapping: $.
+binds:
+- namespace: env
+  keys:
+    PORTER_TOKEN: PORTER_TOKEN
