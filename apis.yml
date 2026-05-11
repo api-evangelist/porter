@@ -94,6 +94,17 @@ common:
     url: https://github.com/getporter/porter
   - type: Community
     url: https://porter.sh/community/
+  - type: Integrations
+    url: https://porter.sh/docs/integrations/
+integrations:
+  - name: Azure Plugin
+  - name: Filesystem Secrets Plugin
+  - name: Hashicorp Plugin
+  - name: Host Secrets Plugin
+  - name: Kubernetes Plugin
+  - name: MongoDB Docker Storage Plugin
+  - name: MongoDB Storage Plugin
+  - name: Plugin Types
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
