@@ -33,7 +33,7 @@ apis:
     properties:
       - type: Documentation
         url: https://porter.sh/docs/
-      - type: Getting Started
+      - type: GettingStarted
         url: https://porter.sh/docs/learn/
       - type: OpenAPI
         url: openapi/porter-bundle-openapi.yml
@@ -80,15 +80,15 @@ apis:
 common:
   - type: Website
     url: https://porter.sh/
-  - type: JSON-LD
+  - type: JSONLD
     url: json-ld/porter-context.jsonld
   - type: JSONSchema
     url: json-schema/porter-manifest-schema.json
   - type: Documentation
     url: https://porter.sh/docs/
-  - type: Getting Started
+  - type: GettingStarted
     url: https://porter.sh/docs/learn/
-  - type: GitHub Organization
+  - type: GitHubOrganization
     url: https://github.com/getporter
   - type: GitHubRepository
     url: https://github.com/getporter/porter
