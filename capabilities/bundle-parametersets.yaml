@@ -1,0 +1,162 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Porter Bundle API — ParameterSets
+  description: 'Porter Bundle API — ParameterSets. 4 operations. Lead operation: Porter List parameter sets. Self-contained
+    Naftiko capability covering one Porter business surface.'
+  tags:
+  - Porter
+  - ParameterSets
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    PORTER_API_KEY: PORTER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: bundle-parametersets
+    baseUri: http://localhost:3000
+    description: Porter Bundle API — ParameterSets business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-parametersets
+      path: /v1/parametersets
+      operations:
+      - name: listparametersets
+        method: GET
+        description: Porter List parameter sets
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createparameterset
+        method: POST
+        description: Porter Create a parameter set
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v1-parametersets-namespace-name
+      path: /v1/parametersets/{namespace}/{name}
+      operations:
+      - name: getparameterset
+        method: GET
+        description: Porter Get a parameter set
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deleteparameterset
+        method: DELETE
+        description: Porter Delete a parameter set
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.PORTER_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: bundle-parametersets-rest
+    port: 8080
+    description: REST adapter for Porter Bundle API — ParameterSets. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/parametersets
+      name: v1-parametersets
+      description: REST surface for v1-parametersets.
+      operations:
+      - method: GET
+        name: listparametersets
+        description: Porter List parameter sets
+        call: bundle-parametersets.listparametersets
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createparameterset
+        description: Porter Create a parameter set
+        call: bundle-parametersets.createparameterset
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/parametersets/{namespace}/{name}
+      name: v1-parametersets-namespace-name
+      description: REST surface for v1-parametersets-namespace-name.
+      operations:
+      - method: GET
+        name: getparameterset
+        description: Porter Get a parameter set
+        call: bundle-parametersets.getparameterset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteparameterset
+        description: Porter Delete a parameter set
+        call: bundle-parametersets.deleteparameterset
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: bundle-parametersets-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Porter Bundle API — ParameterSets. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: porter-list-parameter-sets
+      description: Porter List parameter sets
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: bundle-parametersets.listparametersets
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: porter-create-parameter-set
+      description: Porter Create a parameter set
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: bundle-parametersets.createparameterset
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: porter-get-parameter-set
+      description: Porter Get a parameter set
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: bundle-parametersets.getparameterset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: porter-delete-parameter-set
+      description: Porter Delete a parameter set
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: bundle-parametersets.deleteparameterset
+      outputParameters:
+      - type: object
+        mapping: $.
