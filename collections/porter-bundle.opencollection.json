@@ -1,0 +1,587 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Porter Bundle API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Bundles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Porter List bundles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/bundles",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "query",
+                "description": "Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Filter results by resource name."
+              },
+              {
+                "name": "skip",
+                "value": "",
+                "type": "query",
+                "description": "Number of records to skip for pagination."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return per page."
+              }
+            ]
+          },
+          "docs": "Returns a list of bundles that have been published to or pulled from OCI registries and are known to Porter. Results can be filtered by namespace and name."
+        },
+        {
+          "info": {
+            "name": "Porter Get a bundle",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/bundles/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "query",
+                "description": "Specific version of the bundle to retrieve. Defaults to latest."
+              }
+            ]
+          },
+          "docs": "Returns metadata and the full bundle definition for a specific bundle version, including its actions, parameters, credentials, outputs, and dependencies."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Installations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Porter List installations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/installations",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "query",
+                "description": "Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Filter results by resource name."
+              },
+              {
+                "name": "skip",
+                "value": "",
+                "type": "query",
+                "description": "Number of records to skip for pagination."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return per page."
+              }
+            ]
+          },
+          "docs": "Returns all bundle installations managed by Porter. An installation represents a named instance of a bundle that has been installed and tracks the full lifecycle history of that instance."
+        },
+        {
+          "info": {
+            "name": "Porter Create an installation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:3000/v1/installations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new installation record for a bundle. After creating the installation record, trigger an install action using the run endpoint."
+        },
+        {
+          "info": {
+            "name": "Porter Get an installation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/installations/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              }
+            ]
+          },
+          "docs": "Returns the current state and metadata of a specific installation, including its bundle reference, last action status, outputs, and run history summary."
+        },
+        {
+          "info": {
+            "name": "Porter Update an installation",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "http://localhost:3000/v1/installations/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Partially updates the installation's configuration such as bundle reference, parameters, credentials, or labels."
+        },
+        {
+          "info": {
+            "name": "Porter Delete an installation",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "http://localhost:3000/v1/installations/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              }
+            ]
+          },
+          "docs": "Deletes the installation record and all associated run history. This does not execute an uninstall action on the underlying resources."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Runs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Porter List runs for an installation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/installations/:namespace/:name/runs",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              },
+              {
+                "name": "skip",
+                "value": "",
+                "type": "query",
+                "description": "Number of records to skip for pagination."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return per page."
+              }
+            ]
+          },
+          "docs": "Returns the history of all bundle action executions for a specific installation, ordered from most recent to oldest. Each run captures the action performed, the result, and timing information."
+        },
+        {
+          "info": {
+            "name": "Porter Get a specific run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/installations/:namespace/:name/runs/:run_id",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              },
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the run."
+              }
+            ]
+          },
+          "docs": "Returns details of a single bundle action execution including the bundle action performed, parameters and credentials used, result status, and any outputs produced."
+        },
+        {
+          "info": {
+            "name": "Porter List outputs for a run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/installations/:namespace/:name/runs/:run_id/outputs",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              },
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the run."
+              }
+            ]
+          },
+          "docs": "Returns all outputs produced during a specific bundle action execution. Outputs are values defined in the bundle that are written during an action and can be referenced by dependent bundles or inspected by users."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "CredentialSets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Porter List credential sets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/credentialsets",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "query",
+                "description": "Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Filter results by resource name."
+              },
+              {
+                "name": "skip",
+                "value": "",
+                "type": "query",
+                "description": "Number of records to skip for pagination."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return per page."
+              }
+            ]
+          },
+          "docs": "Returns all credential sets managed by Porter. A credential set maps bundle credential names to their sources, such as environment variables, files, or secret store references."
+        },
+        {
+          "info": {
+            "name": "Porter Create a credential set",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:3000/v1/credentialsets",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new credential set defining how bundle credential names are resolved at execution time from sources such as environment variables, files, or secret store integrations."
+        },
+        {
+          "info": {
+            "name": "Porter Get a credential set",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/credentialsets/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              }
+            ]
+          },
+          "docs": "Returns the specified credential set including its credential mappings. Secret values are never included in responses."
+        },
+        {
+          "info": {
+            "name": "Porter Update a credential set",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "http://localhost:3000/v1/credentialsets/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces the credential mappings in a credential set with the provided definition."
+        },
+        {
+          "info": {
+            "name": "Porter Delete a credential set",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "http://localhost:3000/v1/credentialsets/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              }
+            ]
+          },
+          "docs": "Deletes the specified credential set. Installations referencing this credential set will fail if they are re-run."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "ParameterSets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Porter List parameter sets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/parametersets",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "query",
+                "description": "Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Filter results by resource name."
+              },
+              {
+                "name": "skip",
+                "value": "",
+                "type": "query",
+                "description": "Number of records to skip for pagination."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return per page."
+              }
+            ]
+          },
+          "docs": "Returns all parameter sets managed by Porter. A parameter set maps bundle parameter names to their sources, enabling reuse of parameter configurations across multiple bundle installations."
+        },
+        {
+          "info": {
+            "name": "Porter Create a parameter set",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:3000/v1/parametersets",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new parameter set defining how bundle parameter names are resolved at execution time."
+        },
+        {
+          "info": {
+            "name": "Porter Get a parameter set",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/parametersets/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              }
+            ]
+          },
+          "docs": "Returns the specified parameter set including its parameter mappings. Sensitive parameter values sourced from secret stores are not included in responses."
+        },
+        {
+          "info": {
+            "name": "Porter Delete a parameter set",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "http://localhost:3000/v1/parametersets/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              }
+            ]
+          },
+          "docs": "Deletes the specified parameter set. Installations referencing this parameter set will need to be updated before re-running."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
