@@ -4,7 +4,7 @@ description: >-
   A package manager for Kubernetes that uses Cloud Native Application Bundles (CNAB) to package and deploy applications
   along with their dependencies and configuration.
 type: Index
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
   - Cloud Native
   - CNAB
