@@ -1,0 +1,13 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/porter-bundle-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  description: Bearer token for authenticating to the Porter server API.
+  sources:
+  - openapi/porter-bundle-openapi.yml

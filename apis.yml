@@ -76,6 +76,10 @@ apis:
       - type: Documentation
         url: https://porter.sh/docs/introduction/concepts-and-components/mixins-vs-plugins/
 common:
+  - type: DomainSecurity
+    url: security/porter-domain-security.yml
+  - type: Authentication
+    url: authentication/porter-authentication.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/porterrun
   - type: Website
@@ -96,6 +100,8 @@ common:
     url: https://porter.sh/community/
   - type: Integrations
     url: https://porter.sh/docs/integrations/
+  - type: Blog
+    url: https://porter.sh/blog/index.xml
 integrations:
   - name: Azure Plugin
   - name: Filesystem Secrets Plugin
