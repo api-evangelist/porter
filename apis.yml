@@ -76,6 +76,8 @@ apis:
       - type: Documentation
         url: https://porter.sh/docs/introduction/concepts-and-components/mixins-vs-plugins/
 common:
+  - type: AgenticAccess
+    url: agentic-access/porter-agentic-access.yml
   - type: DomainSecurity
     url: security/porter-domain-security.yml
   - type: Authentication
