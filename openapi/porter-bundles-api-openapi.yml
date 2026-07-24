@@ -1,0 +1,266 @@
+openapi: 3.1.0
+info:
+  title: Porter Bundle Bundles API
+  description: The Porter Bundle API provides programmatic access to managing Cloud Native Application Bundles (CNAB) using Porter. It supports listing and inspecting bundles, managing installations, handling credential sets and parameter sets, and querying installation runs and outputs. Porter implements the CNAB spec for packaging applications with their dependencies into distributable installers.
+  version: 1.0.0
+  contact:
+    name: Porter Community
+    url: https://porter.sh/community/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:3000
+  description: Porter local server (porter server)
+security:
+- bearerAuth: []
+tags:
+- name: Bundles
+  description: Operations for searching, inspecting, and managing CNAB bundles published to OCI registries.
+paths:
+  /v1/bundles:
+    get:
+      operationId: listBundles
+      summary: Porter List bundles
+      description: Returns a list of bundles that have been published to or pulled from OCI registries and are known to Porter. Results can be filtered by namespace and name.
+      tags:
+      - Bundles
+      parameters:
+      - $ref: '#/components/parameters/namespace'
+      - $ref: '#/components/parameters/name'
+      - $ref: '#/components/parameters/skip'
+      - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: List of bundles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BundleListResponse'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /v1/bundles/{namespace}/{name}:
+    get:
+      operationId: getBundle
+      summary: Porter Get a bundle
+      description: Returns metadata and the full bundle definition for a specific bundle version, including its actions, parameters, credentials, outputs, and dependencies.
+      tags:
+      - Bundles
+      parameters:
+      - $ref: '#/components/parameters/namespace_path'
+      - $ref: '#/components/parameters/name_path'
+      - name: version
+        in: query
+        required: false
+        description: Specific version of the bundle to retrieve. Defaults to latest.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Bundle details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Bundle not found
+components:
+  parameters:
+    name_path:
+      name: name
+      in: path
+      required: true
+      description: Name of the resource.
+      schema:
+        type: string
+    namespace_path:
+      name: namespace
+      in: path
+      required: true
+      description: Porter namespace of the resource.
+      schema:
+        type: string
+    skip:
+      name: skip
+      in: query
+      required: false
+      description: Number of records to skip for pagination.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    name:
+      name: name
+      in: query
+      required: false
+      description: Filter results by resource name.
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
+    namespace:
+      name: namespace
+      in: query
+      required: false
+      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
+      schema:
+        type: string
+  schemas:
+    BundleParameter:
+      type: object
+      description: A parameter that can be passed to the bundle at execution time.
+      properties:
+        type:
+          type: string
+          description: JSON Schema type of the parameter.
+        description:
+          type: string
+          description: Description of the parameter's purpose.
+        required:
+          type: boolean
+          description: Whether the parameter is required.
+        default:
+          description: Default value for the parameter.
+        sensitive:
+          type: boolean
+          description: If true, the parameter value contains sensitive data.
+        enum:
+          type: array
+          description: Allowed values for the parameter.
+          items: {}
+    Bundle:
+      type: object
+      description: A Cloud Native Application Bundle (CNAB) known to Porter, including its metadata, actions, parameters, credentials, outputs, and dependencies.
+      properties:
+        name:
+          type: string
+          description: Name of the bundle.
+        version:
+          type: string
+          description: Semantic version of the bundle.
+        description:
+          type: string
+          description: Human-readable description of what the bundle installs.
+        registry:
+          type: string
+          description: OCI registry where the bundle is published.
+        reference:
+          type: string
+          description: Full OCI reference to the bundle image, including registry, name, and tag.
+          example: ghcr.io/getporter/examples/porter-hello:v0.2.0
+        actions:
+          type: object
+          description: Custom actions defined by the bundle in addition to the standard CNAB actions.
+          additionalProperties:
+            $ref: '#/components/schemas/BundleAction'
+        parameters:
+          type: object
+          description: Parameter definitions for configuring the bundle at execution time.
+          additionalProperties:
+            $ref: '#/components/schemas/BundleParameter'
+        credentials:
+          type: object
+          description: Credential definitions required by the bundle.
+          additionalProperties:
+            $ref: '#/components/schemas/BundleCredential'
+        outputs:
+          type: object
+          description: Output definitions for values produced by the bundle.
+          additionalProperties:
+            $ref: '#/components/schemas/BundleOutput'
+        dependencies:
+          type: object
+          description: Dependencies on other bundles required by this bundle.
+          additionalProperties:
+            $ref: '#/components/schemas/BundleDependency'
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          description: Arbitrary labels for the bundle.
+    BundleDependency:
+      type: object
+      description: A dependency on another bundle that must be installed first.
+      properties:
+        bundle:
+          type: string
+          description: OCI reference to the dependent bundle.
+        version:
+          type: string
+          description: Version constraint for the dependency.
+    BundleOutput:
+      type: object
+      description: An output value produced by the bundle during an action.
+      properties:
+        type:
+          type: string
+          description: JSON Schema type of the output value.
+        description:
+          type: string
+          description: Description of the output's purpose.
+        sensitive:
+          type: boolean
+          description: If true, the output contains sensitive data.
+        path:
+          type: string
+          description: File path inside the bundle container where the output is written.
+    BundleAction:
+      type: object
+      description: A custom action defined by the bundle.
+      properties:
+        description:
+          type: string
+          description: Description of what this action does.
+        modifies:
+          type: boolean
+          description: If true, the action modifies the installation state.
+        stateless:
+          type: boolean
+          description: If true, the action does not require an existing installation.
+    BundleListResponse:
+      type: object
+      description: Paginated list of bundles.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Bundle'
+        total:
+          type: integer
+          description: Total number of matching bundles.
+    BundleCredential:
+      type: object
+      description: A credential required by the bundle for accessing external resources.
+      properties:
+        description:
+          type: string
+          description: Description of what this credential is used for.
+        required:
+          type: boolean
+          description: Whether the credential is required.
+        path:
+          type: string
+          description: File path where the credential is written inside the bundle container.
+        env:
+          type: string
+          description: Environment variable name where the credential is injected.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token for authenticating to the Porter server API.
+externalDocs:
+  description: Porter Documentation
+  url: https://porter.sh/docs/

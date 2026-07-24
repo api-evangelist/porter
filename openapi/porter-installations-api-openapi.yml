@@ -1,0 +1,357 @@
+openapi: 3.1.0
+info:
+  title: Porter Bundle Bundles Installations API
+  description: The Porter Bundle API provides programmatic access to managing Cloud Native Application Bundles (CNAB) using Porter. It supports listing and inspecting bundles, managing installations, handling credential sets and parameter sets, and querying installation runs and outputs. Porter implements the CNAB spec for packaging applications with their dependencies into distributable installers.
+  version: 1.0.0
+  contact:
+    name: Porter Community
+    url: https://porter.sh/community/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:3000
+  description: Porter local server (porter server)
+security:
+- bearerAuth: []
+tags:
+- name: Installations
+  description: Operations for managing bundle installations, including install, upgrade, invoke, and uninstall lifecycle actions.
+paths:
+  /v1/installations:
+    get:
+      operationId: listInstallations
+      summary: Porter List installations
+      description: Returns all bundle installations managed by Porter. An installation represents a named instance of a bundle that has been installed and tracks the full lifecycle history of that instance.
+      tags:
+      - Installations
+      parameters:
+      - $ref: '#/components/parameters/namespace'
+      - $ref: '#/components/parameters/name'
+      - $ref: '#/components/parameters/skip'
+      - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: List of installations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstallationListResponse'
+        '401':
+          description: Unauthorized
+    post:
+      operationId: createInstallation
+      summary: Porter Create an installation
+      description: Creates a new installation record for a bundle. After creating the installation record, trigger an install action using the run endpoint.
+      tags:
+      - Installations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInstallationRequest'
+      responses:
+        '201':
+          description: Installation created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Installation'
+        '400':
+          description: Invalid installation specification
+        '401':
+          description: Unauthorized
+        '409':
+          description: Installation already exists
+  /v1/installations/{namespace}/{name}:
+    get:
+      operationId: getInstallation
+      summary: Porter Get an installation
+      description: Returns the current state and metadata of a specific installation, including its bundle reference, last action status, outputs, and run history summary.
+      tags:
+      - Installations
+      parameters:
+      - $ref: '#/components/parameters/namespace_path'
+      - $ref: '#/components/parameters/name_path'
+      responses:
+        '200':
+          description: Installation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Installation'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Installation not found
+    patch:
+      operationId: patchInstallation
+      summary: Porter Update an installation
+      description: Partially updates the installation's configuration such as bundle reference, parameters, credentials, or labels.
+      tags:
+      - Installations
+      parameters:
+      - $ref: '#/components/parameters/namespace_path'
+      - $ref: '#/components/parameters/name_path'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchInstallationRequest'
+      responses:
+        '200':
+          description: Installation updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Installation'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Installation not found
+    delete:
+      operationId: deleteInstallation
+      summary: Porter Delete an installation
+      description: Deletes the installation record and all associated run history. This does not execute an uninstall action on the underlying resources.
+      tags:
+      - Installations
+      parameters:
+      - $ref: '#/components/parameters/namespace_path'
+      - $ref: '#/components/parameters/name_path'
+      responses:
+        '204':
+          description: Installation deleted
+        '401':
+          description: Unauthorized
+        '404':
+          description: Installation not found
+components:
+  schemas:
+    CreateInstallationRequest:
+      type: object
+      description: Request body for creating a new installation.
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Name of the installation.
+        namespace:
+          type: string
+          description: Porter namespace for the installation.
+        bundle:
+          type: object
+          description: Bundle reference for the installation.
+          properties:
+            repository:
+              type: string
+            version:
+              type: string
+        parameters:
+          type: object
+          additionalProperties: {}
+          description: Parameter values for the installation.
+        credentialSets:
+          type: array
+          items:
+            type: string
+        parameterSets:
+          type: array
+          items:
+            type: string
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+    InstallationStatus:
+      type: object
+      description: Current state of an installation.
+      properties:
+        runID:
+          type: string
+          description: ID of the most recent run.
+        action:
+          type: string
+          description: Most recently executed action.
+          enum:
+          - install
+          - upgrade
+          - invoke
+          - uninstall
+        result:
+          type: string
+          description: Result of the most recent action.
+          enum:
+          - succeeded
+          - failed
+          - running
+          - pending
+          - cancelled
+        bundleReference:
+          type: string
+          description: OCI reference to the bundle used in the most recent run.
+        created:
+          type: string
+          format: date-time
+          description: When the installation was first created.
+        modified:
+          type: string
+          format: date-time
+          description: When the installation status was last updated.
+    Installation:
+      type: object
+      description: A named instance of a bundle that has been installed and is tracked by Porter. Captures the full lifecycle state of a bundle deployment.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this installation.
+        name:
+          type: string
+          description: Name of the installation, unique within its namespace.
+        namespace:
+          type: string
+          description: Porter namespace this installation belongs to.
+        bundle:
+          type: object
+          description: Reference to the bundle that was installed.
+          properties:
+            repository:
+              type: string
+              description: OCI repository of the bundle.
+            version:
+              type: string
+              description: Version of the bundle installed.
+            digest:
+              type: string
+              description: OCI digest of the bundle image.
+        status:
+          $ref: '#/components/schemas/InstallationStatus'
+        parameters:
+          type: object
+          description: Parameter values provided to the installation.
+          additionalProperties: {}
+        credentialSets:
+          type: array
+          description: Names of credential sets used by this installation.
+          items:
+            type: string
+        parameterSets:
+          type: array
+          description: Names of parameter sets used by this installation.
+          items:
+            type: string
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          description: Labels for categorizing or filtering this installation.
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
+          description: Annotations for storing arbitrary metadata.
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the installation was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the installation was last updated.
+    PatchInstallationRequest:
+      type: object
+      description: Request body for partially updating an installation.
+      properties:
+        bundle:
+          type: object
+          properties:
+            repository:
+              type: string
+            version:
+              type: string
+        parameters:
+          type: object
+          additionalProperties: {}
+        credentialSets:
+          type: array
+          items:
+            type: string
+        parameterSets:
+          type: array
+          items:
+            type: string
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+    InstallationListResponse:
+      type: object
+      description: Paginated list of installations.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Installation'
+        total:
+          type: integer
+          description: Total number of matching installations.
+  parameters:
+    name_path:
+      name: name
+      in: path
+      required: true
+      description: Name of the resource.
+      schema:
+        type: string
+    namespace:
+      name: namespace
+      in: query
+      required: false
+      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
+      schema:
+        type: string
+    namespace_path:
+      name: namespace
+      in: path
+      required: true
+      description: Porter namespace of the resource.
+      schema:
+        type: string
+    skip:
+      name: skip
+      in: query
+      required: false
+      description: Number of records to skip for pagination.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    name:
+      name: name
+      in: query
+      required: false
+      description: Filter results by resource name.
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token for authenticating to the Porter server API.
+externalDocs:
+  description: Porter Documentation
+  url: https://porter.sh/docs/

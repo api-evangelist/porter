@@ -1,0 +1,231 @@
+openapi: 3.1.0
+info:
+  title: Porter Bundle Bundles ParameterSets API
+  description: The Porter Bundle API provides programmatic access to managing Cloud Native Application Bundles (CNAB) using Porter. It supports listing and inspecting bundles, managing installations, handling credential sets and parameter sets, and querying installation runs and outputs. Porter implements the CNAB spec for packaging applications with their dependencies into distributable installers.
+  version: 1.0.0
+  contact:
+    name: Porter Community
+    url: https://porter.sh/community/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:3000
+  description: Porter local server (porter server)
+security:
+- bearerAuth: []
+tags:
+- name: ParameterSets
+  description: Operations for managing parameter sets that supply configuration values to bundle executions.
+paths:
+  /v1/parametersets:
+    get:
+      operationId: listParameterSets
+      summary: Porter List parameter sets
+      description: Returns all parameter sets managed by Porter. A parameter set maps bundle parameter names to their sources, enabling reuse of parameter configurations across multiple bundle installations.
+      tags:
+      - ParameterSets
+      parameters:
+      - $ref: '#/components/parameters/namespace'
+      - $ref: '#/components/parameters/name'
+      - $ref: '#/components/parameters/skip'
+      - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: List of parameter sets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterSetListResponse'
+        '401':
+          description: Unauthorized
+    post:
+      operationId: createParameterSet
+      summary: Porter Create a parameter set
+      description: Creates a new parameter set defining how bundle parameter names are resolved at execution time.
+      tags:
+      - ParameterSets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParameterSet'
+      responses:
+        '201':
+          description: Parameter set created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterSet'
+        '400':
+          description: Invalid parameter set specification
+        '401':
+          description: Unauthorized
+  /v1/parametersets/{namespace}/{name}:
+    get:
+      operationId: getParameterSet
+      summary: Porter Get a parameter set
+      description: Returns the specified parameter set including its parameter mappings. Sensitive parameter values sourced from secret stores are not included in responses.
+      tags:
+      - ParameterSets
+      parameters:
+      - $ref: '#/components/parameters/namespace_path'
+      - $ref: '#/components/parameters/name_path'
+      responses:
+        '200':
+          description: Parameter set details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterSet'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Parameter set not found
+    delete:
+      operationId: deleteParameterSet
+      summary: Porter Delete a parameter set
+      description: Deletes the specified parameter set. Installations referencing this parameter set will need to be updated before re-running.
+      tags:
+      - ParameterSets
+      parameters:
+      - $ref: '#/components/parameters/namespace_path'
+      - $ref: '#/components/parameters/name_path'
+      responses:
+        '204':
+          description: Parameter set deleted
+        '401':
+          description: Unauthorized
+        '404':
+          description: Parameter set not found
+components:
+  parameters:
+    name_path:
+      name: name
+      in: path
+      required: true
+      description: Name of the resource.
+      schema:
+        type: string
+    namespace_path:
+      name: namespace
+      in: path
+      required: true
+      description: Porter namespace of the resource.
+      schema:
+        type: string
+    skip:
+      name: skip
+      in: query
+      required: false
+      description: Number of records to skip for pagination.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    name:
+      name: name
+      in: query
+      required: false
+      description: Filter results by resource name.
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
+    namespace:
+      name: namespace
+      in: query
+      required: false
+      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
+      schema:
+        type: string
+  schemas:
+    ParameterMapping:
+      type: object
+      description: Maps a bundle parameter name to its runtime source.
+      required:
+      - name
+      - source
+      properties:
+        name:
+          type: string
+          description: Name of the bundle parameter this mapping applies to.
+        source:
+          $ref: '#/components/schemas/ValueSource'
+    ValueSource:
+      type: object
+      description: Defines where a credential or parameter value is sourced from at execution time. Exactly one of the source fields should be set.
+      properties:
+        env:
+          type: string
+          description: Name of an environment variable providing the value.
+        path:
+          type: string
+          description: Absolute path to a file providing the value.
+        value:
+          type: string
+          description: A literal string value.
+        secret:
+          type: string
+          description: Reference to a secret in the configured secret store plugin, such as a secret name in HashiCorp Vault or Azure Key Vault.
+        command:
+          type: string
+          description: Shell command whose stdout provides the value.
+    ParameterSetListResponse:
+      type: object
+      description: Paginated list of parameter sets.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParameterSet'
+        total:
+          type: integer
+    ParameterSet:
+      type: object
+      description: A named collection of parameter mappings that resolve bundle parameter names to their runtime sources, enabling reuse across installations.
+      required:
+      - name
+      - parameters
+      properties:
+        name:
+          type: string
+          description: Name of the parameter set.
+        namespace:
+          type: string
+          description: Porter namespace this parameter set belongs to.
+        parameters:
+          type: array
+          description: List of parameter mappings.
+          items:
+            $ref: '#/components/schemas/ParameterMapping'
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          description: Labels for categorizing the parameter set.
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the parameter set was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the parameter set was last updated.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token for authenticating to the Porter server API.
+externalDocs:
+  description: Porter Documentation
+  url: https://porter.sh/docs/
