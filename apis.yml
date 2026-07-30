@@ -4,7 +4,20 @@ description: >-
   A package manager for Kubernetes that uses Cloud Native Application Bundles (CNAB) to package and deploy applications
   along with their dependencies and configuration.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: free
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Free · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/porter.png
 tags:
   - Cloud Native
   - CNAB
@@ -16,65 +29,126 @@ created: '2025'
 modified: '2026-05-19'
 specificationVersion: '0.19'
 apis:
-  - aid: porter:porter-bundle-api
-    name: Porter Bundle API
-    description: >-
-      Core API for authoring, building, distributing, and installing Cloud Native Application Bundles (CNAB) using
-      Porter. Bundles package application artifacts, client tools, configuration, and deployment logic into a single
-      distributable installer that can be run with a single command.
-    humanURL: https://porter.sh/docs/
-    baseURL: https://porter.sh
-    tags:
-      - Cloud Native
-      - CNAB
-      - DevOps
-      - Kubernetes
-      - Package Manager
-    properties:
-      - type: Documentation
-        url: https://porter.sh/docs/
-      - type: GettingStarted
-        url: https://porter.sh/docs/learn/
-      - type: OpenAPI
-        url: openapi/porter-bundle-openapi.yml
-      - type: JSONSchema
-        url: json-schema/porter-manifest-schema.json
-  - aid: porter:porter-mixins-api
-    name: Porter Mixins API
-    description: >-
-      Extension interface for building and using mixins, which are the building blocks for authoring Porter bundles.
-      Mixins provide pre-built integrations for interacting with tools and services such as Kubernetes, Helm, Terraform,
-      and Docker Compose from within a bundle action.
-    humanURL: https://porter.sh/mixins/
-    baseURL: https://porter.sh
-    tags:
-      - CNAB
-      - DevOps
-      - Extensions
-      - Mixins
-      - Plugins
-    properties:
-      - type: Documentation
-        url: https://porter.sh/mixins/
-      - type: Reference
-        url: https://porter.sh/docs/development/dev-a-mixin/
-  - aid: porter:porter-plugins-api
-    name: Porter Plugins API
-    description: >-
-      Plugin interface that allows extending Porter's core functionality, such as storing installation data, credential
-      sets, and parameter sets in external systems like cloud storage instead of the local filesystem. Plugins
-      reimplement Porter's default behavior to integrate with enterprise or cloud infrastructure.
-    humanURL: https://porter.sh/docs/introduction/concepts-and-components/mixins-vs-plugins/
-    baseURL: https://porter.sh
-    tags:
-      - Cloud Native
-      - CNAB
-      - DevOps
-      - Extensions
-      - Plugins
-    properties:
-      - type: Documentation
-        url: https://porter.sh/docs/introduction/concepts-and-components/mixins-vs-plugins/
+- aid: porter:porter-mixins-api
+  name: Porter Mixins API
+  description: >-
+    Extension interface for building and using mixins, which are the building blocks for authoring Porter
+    bundles. Mixins provide pre-built integrations for interacting with tools and services such as Kubernetes,
+    Helm, Terraform, and Docker Compose from within a bundle action.
+  humanURL: https://porter.sh/mixins/
+  baseURL: https://porter.sh
+  tags:
+  - CNAB
+  - DevOps
+  - Extensions
+  - Mixins
+  - Plugins
+  properties:
+  - type: Documentation
+    url: https://porter.sh/mixins/
+  - type: Reference
+    url: https://porter.sh/docs/development/dev-a-mixin/
+- aid: porter:porter-plugins-api
+  name: Porter Plugins API
+  description: >-
+    Plugin interface that allows extending Porter's core functionality, such as storing installation data,
+    credential sets, and parameter sets in external systems like cloud storage instead of the local filesystem.
+    Plugins reimplement Porter's default behavior to integrate with enterprise or cloud infrastructure.
+  humanURL: https://porter.sh/docs/introduction/concepts-and-components/mixins-vs-plugins/
+  baseURL: https://porter.sh
+  tags:
+  - Cloud Native
+  - CNAB
+  - DevOps
+  - Extensions
+  - Plugins
+  properties:
+  - type: Documentation
+    url: https://porter.sh/docs/introduction/concepts-and-components/mixins-vs-plugins/
+- aid: porter:porter-bundles-api
+  name: Porter Bundles API
+  description: >-
+    Operations for searching, inspecting, and managing CNAB bundles published to OCI registries.
+  humanURL: https://porter.sh/docs/
+  baseURL: https://porter.sh
+  tags:
+  - Bundles
+  properties:
+  - type: OpenAPI
+    url: openapi/porter-bundles-api-openapi.yml
+  - type: Documentation
+    url: https://porter.sh/docs/
+  - type: GettingStarted
+    url: https://porter.sh/docs/learn/
+  - type: JSONSchema
+    url: json-schema/porter-manifest-schema.json
+- aid: porter:porter-credentialsets-api
+  name: Porter CredentialSets API
+  description: Operations for managing credential sets that supply secret values to bundle executions.
+  humanURL: https://porter.sh/docs/
+  baseURL: https://porter.sh
+  tags:
+  - CredentialSets
+  properties:
+  - type: OpenAPI
+    url: openapi/porter-credentialsets-api-openapi.yml
+  - type: Documentation
+    url: https://porter.sh/docs/
+  - type: GettingStarted
+    url: https://porter.sh/docs/learn/
+  - type: JSONSchema
+    url: json-schema/porter-manifest-schema.json
+- aid: porter:porter-installations-api
+  name: Porter Installations API
+  description: >-
+    Operations for managing bundle installations, including install, upgrade, invoke, and uninstall lifecycle
+    actions.
+  humanURL: https://porter.sh/docs/
+  baseURL: https://porter.sh
+  tags:
+  - Installations
+  properties:
+  - type: OpenAPI
+    url: openapi/porter-installations-api-openapi.yml
+  - type: Documentation
+    url: https://porter.sh/docs/
+  - type: GettingStarted
+    url: https://porter.sh/docs/learn/
+  - type: JSONSchema
+    url: json-schema/porter-manifest-schema.json
+- aid: porter:porter-parametersets-api
+  name: Porter ParameterSets API
+  description: >-
+    Operations for managing parameter sets that supply configuration values to bundle executions.
+  humanURL: https://porter.sh/docs/
+  baseURL: https://porter.sh
+  tags:
+  - ParameterSets
+  properties:
+  - type: OpenAPI
+    url: openapi/porter-parametersets-api-openapi.yml
+  - type: Documentation
+    url: https://porter.sh/docs/
+  - type: GettingStarted
+    url: https://porter.sh/docs/learn/
+  - type: JSONSchema
+    url: json-schema/porter-manifest-schema.json
+- aid: porter:porter-runs-api
+  name: Porter Runs API
+  description: Operations for querying the history of bundle action executions and their outputs.
+  humanURL: https://porter.sh/docs/
+  baseURL: https://porter.sh
+  tags:
+  - Runs
+  properties:
+  - type: OpenAPI
+    url: openapi/porter-runs-api-openapi.yml
+  - type: Documentation
+    url: https://porter.sh/docs/
+  - type: GettingStarted
+    url: https://porter.sh/docs/learn/
+  - type: JSONSchema
+    url: json-schema/porter-manifest-schema.json
 common:
   - type: AgenticAccess
     url: agentic-access/porter-agentic-access.yml
