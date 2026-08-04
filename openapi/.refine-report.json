@@ -1,0 +1,22 @@
+{
+  "provider": "porter",
+  "sources": [
+    "porter-bundles-api-openapi.yml",
+    "porter-credentialsets-api-openapi.yml",
+    "porter-installations-api-openapi.yml",
+    "porter-parametersets-api-openapi.yml",
+    "porter-runs-api-openapi.yml"
+  ],
+  "outputs": [
+    "porter-bundles-api-openapi.yml",
+    "porter-credentialsets-api-openapi.yml",
+    "porter-installations-api-openapi.yml",
+    "porter-parametersets-api-openapi.yml",
+    "porter-runs-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
