@@ -150,6 +150,9 @@ apis:
   - type: JSONSchema
     url: json-schema/porter-manifest-schema.json
 common:
+  - type: License
+    name: Apache-2.0
+    url: https://github.com/getporter/porter/blob/main/LICENSE
   - type: AgenticAccess
     url: agentic-access/porter-agentic-access.yml
   - type: DomainSecurity
