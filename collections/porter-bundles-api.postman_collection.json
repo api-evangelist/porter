@@ -1,0 +1,527 @@
+{
+  "item": [
+    {
+      "id": "f0f7ccb7-59d5-4b1f-9678-7f4707f9c0c7",
+      "name": "Bundles",
+      "description": {
+        "content": "Operations for searching, inspecting, and managing CNAB bundles published to OCI registries.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "fef50259-8612-403c-8c66-a16cb966fe58",
+          "name": "Porter List bundles",
+          "request": {
+            "name": "Porter List bundles",
+            "description": {
+              "content": "Returns a list of bundles that have been published to or pulled from OCI registries and are known to Porter. Results can be filtered by namespace and name.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "bundles"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "namespace",
+                  "value": "<string>",
+                  "description": "Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context."
+                },
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>",
+                  "description": "Filter results by resource name."
+                },
+                {
+                  "disabled": false,
+                  "key": "skip",
+                  "value": "0",
+                  "description": "Number of records to skip for pagination."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "100",
+                  "description": "Maximum number of records to return per page."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "204950bf-377f-44a5-8165-3a3981e573b8",
+              "name": "List of bundles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "bundles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "namespace",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "skip",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"name\": \"string\",\n      \"version\": \"string\",\n      \"description\": \"string\",\n      \"registry\": \"string\",\n      \"reference\": \"ghcr.io/getporter/examples/porter-hello:v0.2.0\",\n      \"actions\": {\n        \"key_0\": {\n          \"description\": \"string\",\n          \"modifies\": false,\n          \"stateless\": false\n        }\n      },\n      \"parameters\": {\n        \"key_0\": {\n          \"type\": \"string\",\n          \"description\": \"string\",\n          \"required\": false,\n          \"default\": {},\n          \"sensitive\": false\n        },\n        \"key_1\": {\n          \"type\": \"string\",\n          \"description\": \"string\",\n          \"required\": false,\n          \"default\": {},\n          \"sensitive\": false\n        }\n      },\n      \"credentials\": {\n        \"key_0\": {\n          \"description\": \"string\",\n          \"required\": true,\n          \"path\": \"string\",\n          \"env\": \"string\"\n        },\n        \"key_1\": {\n          \"description\": \"string\",\n          \"required\": false,\n          \"path\": \"string\",\n          \"env\": \"string\"\n        }\n      },\n      \"outputs\": {\n        \"key_0\": {\n          \"type\": \"string\",\n          \"description\": \"string\",\n          \"sensitive\": true,\n          \"path\": \"string\"\n        }\n      },\n      \"dependencies\": {\n        \"key_0\": {\n          \"bundle\": \"string\",\n          \"version\": \"string\"\n        }\n      },\n      \"labels\": {\n        \"key_0\": \"string\"\n      }\n    },\n    {\n      \"name\": \"string\",\n      \"version\": \"string\",\n      \"description\": \"string\",\n      \"registry\": \"string\",\n      \"reference\": \"ghcr.io/getporter/examples/porter-hello:v0.2.0\",\n      \"actions\": {\n        \"key_0\": {\n          \"description\": \"string\",\n          \"modifies\": false,\n          \"stateless\": true\n        },\n        \"key_1\": {\n          \"description\": \"string\",\n          \"modifies\": true,\n          \"stateless\": true\n        }\n      },\n      \"parameters\": {\n        \"key_0\": {\n          \"type\": \"string\",\n          \"description\": \"string\",\n          \"required\": false,\n          \"default\": {},\n          \"sensitive\": true\n        }\n      },\n      \"credentials\": {\n        \"key_0\": {\n          \"description\": \"string\",\n          \"required\": false,\n          \"path\": \"string\",\n          \"env\": \"string\"\n        },\n        \"key_1\": {\n          \"description\": \"string\",\n          \"required\": false,\n          \"path\": \"string\",\n          \"env\": \"string\"\n        }\n      },\n      \"outputs\": {\n        \"key_0\": {\n          \"type\": \"string\",\n          \"description\": \"string\",\n          \"sensitive\": true,\n          \"path\": \"string\"\n        },\n        \"key_1\": {\n          \"type\": \"string\",\n          \"description\": \"string\",\n          \"sensitive\": true,\n          \"path\": \"string\"\n        }\n      },\n      \"dependencies\": {\n        \"key_0\": {\n          \"bundle\": \"string\",\n          \"version\": \"string\"\n        }\n      },\n      \"labels\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      }\n    }\n  ],\n  \"total\": 3662\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ea3f3a92-9bd3-4a5b-aa65-1950c4e82094",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "bundles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "namespace",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "skip",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "15a06261-609a-4d03-a736-86b6bb83ae12",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "bundles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "namespace",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "skip",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "00acd194-5002-4f0a-af13-30ee0dcb7fa6",
+          "name": "Porter Get a bundle",
+          "request": {
+            "name": "Porter Get a bundle",
+            "description": {
+              "content": "Returns metadata and the full bundle definition for a specific bundle version, including its actions, parameters, credentials, outputs, and dependencies.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "bundles",
+                ":namespace",
+                ":name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "version",
+                  "value": "<string>",
+                  "description": "Specific version of the bundle to retrieve. Defaults to latest."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "namespace",
+                  "description": "(Required) Porter namespace of the resource."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) Name of the resource."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d783658a-cdef-49d0-b272-bf5771dbb549",
+              "name": "Bundle details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "bundles",
+                    ":namespace",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "version",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Porter namespace of the resource."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"name\": \"string\",\n  \"version\": \"string\",\n  \"description\": \"string\",\n  \"registry\": \"string\",\n  \"reference\": \"ghcr.io/getporter/examples/porter-hello:v0.2.0\",\n  \"actions\": {\n    \"key_0\": {\n      \"description\": \"string\",\n      \"modifies\": true,\n      \"stateless\": true\n    },\n    \"key_1\": {\n      \"description\": \"string\",\n      \"modifies\": false,\n      \"stateless\": false\n    }\n  },\n  \"parameters\": {\n    \"key_0\": {\n      \"type\": \"string\",\n      \"description\": \"string\",\n      \"required\": false,\n      \"default\": {},\n      \"sensitive\": true\n    }\n  },\n  \"credentials\": {\n    \"key_0\": {\n      \"description\": \"string\",\n      \"required\": true,\n      \"path\": \"string\",\n      \"env\": \"string\"\n    },\n    \"key_1\": {\n      \"description\": \"string\",\n      \"required\": false,\n      \"path\": \"string\",\n      \"env\": \"string\"\n    },\n    \"key_2\": {\n      \"description\": \"string\",\n      \"required\": true,\n      \"path\": \"string\",\n      \"env\": \"string\"\n    }\n  },\n  \"outputs\": {\n    \"key_0\": {\n      \"type\": \"string\",\n      \"description\": \"string\",\n      \"sensitive\": true,\n      \"path\": \"string\"\n    },\n    \"key_1\": {\n      \"type\": \"string\",\n      \"description\": \"string\",\n      \"sensitive\": false,\n      \"path\": \"string\"\n    },\n    \"key_2\": {\n      \"type\": \"string\",\n      \"description\": \"string\",\n      \"sensitive\": true,\n      \"path\": \"string\"\n    }\n  },\n  \"dependencies\": {\n    \"key_0\": {\n      \"bundle\": \"string\",\n      \"version\": \"string\"\n    },\n    \"key_1\": {\n      \"bundle\": \"string\",\n      \"version\": \"string\"\n    }\n  },\n  \"labels\": {\n    \"key_0\": \"string\",\n    \"key_1\": \"string\",\n    \"key_2\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "162ea284-20c1-4674-a222-be6ff277db7f",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "bundles",
+                    ":namespace",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "version",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Porter namespace of the resource."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "044480b0-08b3-4408-8e2c-f63ccb30ab29",
+              "name": "Bundle not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "bundles",
+                    ":namespace",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "version",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Porter namespace of the resource."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:3000",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "1e1aef18-84fb-428d-8b00-6e06357d28df",
+    "name": "Porter Bundle Bundles API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Porter Bundle API provides programmatic access to managing Cloud Native Application Bundles (CNAB) using Porter. It supports listing and inspecting bundles, managing installations, handling credential sets and parameter sets, and querying installation runs and outputs. Porter implements the CNAB spec for packaging applications with their dependencies into distributable installers.\n\nContact Support:\n Name: Porter Community",
+      "type": "text/plain"
+    }
+  }
+}

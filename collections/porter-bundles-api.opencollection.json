@@ -1,0 +1,92 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Porter Bundle Bundles API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Bundles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Porter List bundles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/bundles",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "query",
+                "description": "Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Filter results by resource name."
+              },
+              {
+                "name": "skip",
+                "value": "",
+                "type": "query",
+                "description": "Number of records to skip for pagination."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return per page."
+              }
+            ]
+          },
+          "docs": "Returns a list of bundles that have been published to or pulled from OCI registries and are known to Porter. Results can be filtered by namespace and name."
+        },
+        {
+          "info": {
+            "name": "Porter Get a bundle",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/bundles/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "query",
+                "description": "Specific version of the bundle to retrieve. Defaults to latest."
+              }
+            ]
+          },
+          "docs": "Returns metadata and the full bundle definition for a specific bundle version, including its actions, parameters, credentials, outputs, and dependencies."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

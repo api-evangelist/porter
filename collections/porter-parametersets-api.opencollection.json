@@ -1,0 +1,126 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Porter Bundle Bundles ParameterSets API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "ParameterSets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Porter List parameter sets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/parametersets",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "query",
+                "description": "Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Filter results by resource name."
+              },
+              {
+                "name": "skip",
+                "value": "",
+                "type": "query",
+                "description": "Number of records to skip for pagination."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return per page."
+              }
+            ]
+          },
+          "docs": "Returns all parameter sets managed by Porter. A parameter set maps bundle parameter names to their sources, enabling reuse of parameter configurations across multiple bundle installations."
+        },
+        {
+          "info": {
+            "name": "Porter Create a parameter set",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:3000/v1/parametersets",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new parameter set defining how bundle parameter names are resolved at execution time."
+        },
+        {
+          "info": {
+            "name": "Porter Get a parameter set",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/parametersets/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              }
+            ]
+          },
+          "docs": "Returns the specified parameter set including its parameter mappings. Sensitive parameter values sourced from secret stores are not included in responses."
+        },
+        {
+          "info": {
+            "name": "Porter Delete a parameter set",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "http://localhost:3000/v1/parametersets/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              }
+            ]
+          },
+          "docs": "Deletes the specified parameter set. Installations referencing this parameter set will need to be updated before re-running."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

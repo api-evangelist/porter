@@ -1,0 +1,155 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Porter Bundle Bundles Installations API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Installations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Porter List installations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/installations",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "query",
+                "description": "Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Filter results by resource name."
+              },
+              {
+                "name": "skip",
+                "value": "",
+                "type": "query",
+                "description": "Number of records to skip for pagination."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return per page."
+              }
+            ]
+          },
+          "docs": "Returns all bundle installations managed by Porter. An installation represents a named instance of a bundle that has been installed and tracks the full lifecycle history of that instance."
+        },
+        {
+          "info": {
+            "name": "Porter Create an installation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:3000/v1/installations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new installation record for a bundle. After creating the installation record, trigger an install action using the run endpoint."
+        },
+        {
+          "info": {
+            "name": "Porter Get an installation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/installations/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              }
+            ]
+          },
+          "docs": "Returns the current state and metadata of a specific installation, including its bundle reference, last action status, outputs, and run history summary."
+        },
+        {
+          "info": {
+            "name": "Porter Update an installation",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "http://localhost:3000/v1/installations/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Partially updates the installation's configuration such as bundle reference, parameters, credentials, or labels."
+        },
+        {
+          "info": {
+            "name": "Porter Delete an installation",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "http://localhost:3000/v1/installations/:namespace/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Porter namespace of the resource."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the resource."
+              }
+            ]
+          },
+          "docs": "Deletes the installation record and all associated run history. This does not execute an uninstall action on the underlying resources."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
