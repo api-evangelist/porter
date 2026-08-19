@@ -27,7 +27,7 @@ tags:
 url: https://raw.githubusercontent.com/api-evangelist/porter/refs/heads/main/apis.yml
 created: '2025'
 modified: '2026-05-19'
-specificationVersion: '0.19'
+specificationVersion: '0.23'
 apis:
 - aid: porter:porter-mixins-api
   name: Porter Mixins API
