@@ -4,6 +4,19 @@ description: >-
   A package manager for Kubernetes that uses Cloud Native Application Bundles (CNAB) to package and deploy applications
   along with their dependencies and configuration.
 type: Index
+deliveryModel:
+  model: self-hosted
+  license: Apache-2.0
+  open_source: true
+  commercial: false
+  callable_host: false
+  label: Self-hosted open source · you run it yourself
+  confidence: high
+  source:
+  - license
+  - openapi
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: free
   onboarding: self-serve
@@ -162,6 +175,16 @@ apis:
   - type: JSONSchema
     url: json-schema/porter-manifest-schema.json
 common:
+  - type: IssueTracker
+    url: https://github.com/getporter/porter/issues
+  - type: Releases
+    url: https://github.com/getporter/porter/releases
+  - type: SecurityPolicy
+    url: https://github.com/getporter/porter/blob/main/SECURITY.md
+  - type: CodeOfConduct
+    url: https://github.com/getporter/porter/blob/main/CODE_OF_CONDUCT.md
+  - type: ContributionGuide
+    url: https://github.com/getporter/porter/blob/main/CONTRIBUTING.md
   - type: License
     name: Apache-2.0
     url: https://github.com/getporter/porter/blob/main/LICENSE
