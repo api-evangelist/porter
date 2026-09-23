@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: Porter Bundle Bundles API
   description: The Porter Bundle API provides programmatic access to managing Cloud Native Application Bundles (CNAB) using Porter. It supports listing and inspecting bundles, managing installations, handling credential sets and parameter sets, and querying installation runs and outputs. Porter implements the CNAB spec for packaging applications with their dependencies into distributable installers.
@@ -77,6 +77,30 @@ components:
       description: Name of the resource.
       schema:
         type: string
+    name:
+      name: name
+      in: query
+      required: false
+      description: Filter results by resource name.
+      schema:
+        type: string
+    namespace:
+      name: namespace
+      in: query
+      required: false
+      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
     namespace_path:
       name: namespace
       in: path
@@ -93,31 +117,47 @@ components:
         type: integer
         minimum: 0
         default: 0
-    name:
-      name: name
-      in: query
-      required: false
-      description: Filter results by resource name.
-      schema:
-        type: string
-    limit:
-      name: limit
-      in: query
-      required: false
-      description: Maximum number of records to return per page.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 500
-        default: 100
-    namespace:
-      name: namespace
-      in: query
-      required: false
-      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
-      schema:
-        type: string
   schemas:
+    BundleAction:
+      type: object
+      description: A custom action defined by the bundle.
+      properties:
+        description:
+          type: string
+          description: Description of what this action does.
+        modifies:
+          type: boolean
+          description: If true, the action modifies the installation state.
+        stateless:
+          type: boolean
+          description: If true, the action does not require an existing installation.
+    BundleListResponse:
+      type: object
+      description: Paginated list of bundles.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Bundle'
+        total:
+          type: integer
+          description: Total number of matching bundles.
+    BundleOutput:
+      type: object
+      description: An output value produced by the bundle during an action.
+      properties:
+        type:
+          type: string
+          description: JSON Schema type of the output value.
+        description:
+          type: string
+          description: Description of the output's purpose.
+        sensitive:
+          type: boolean
+          description: If true, the output contains sensitive data.
+        path:
+          type: string
+          description: File path inside the bundle container where the output is written.
     BundleParameter:
       type: object
       description: A parameter that can be passed to the bundle at execution time.
@@ -190,56 +230,6 @@ components:
           additionalProperties:
             type: string
           description: Arbitrary labels for the bundle.
-    BundleDependency:
-      type: object
-      description: A dependency on another bundle that must be installed first.
-      properties:
-        bundle:
-          type: string
-          description: OCI reference to the dependent bundle.
-        version:
-          type: string
-          description: Version constraint for the dependency.
-    BundleOutput:
-      type: object
-      description: An output value produced by the bundle during an action.
-      properties:
-        type:
-          type: string
-          description: JSON Schema type of the output value.
-        description:
-          type: string
-          description: Description of the output's purpose.
-        sensitive:
-          type: boolean
-          description: If true, the output contains sensitive data.
-        path:
-          type: string
-          description: File path inside the bundle container where the output is written.
-    BundleAction:
-      type: object
-      description: A custom action defined by the bundle.
-      properties:
-        description:
-          type: string
-          description: Description of what this action does.
-        modifies:
-          type: boolean
-          description: If true, the action modifies the installation state.
-        stateless:
-          type: boolean
-          description: If true, the action does not require an existing installation.
-    BundleListResponse:
-      type: object
-      description: Paginated list of bundles.
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Bundle'
-        total:
-          type: integer
-          description: Total number of matching bundles.
     BundleCredential:
       type: object
       description: A credential required by the bundle for accessing external resources.
@@ -256,6 +246,16 @@ components:
         env:
           type: string
           description: Environment variable name where the credential is injected.
+    BundleDependency:
+      type: object
+      description: A dependency on another bundle that must be installed first.
+      properties:
+        bundle:
+          type: string
+          description: OCI reference to the dependent bundle.
+        version:
+          type: string
+          description: Version constraint for the dependency.
   securitySchemes:
     bearerAuth:
       type: http

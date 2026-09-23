@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Porter Bundle Bundles Installations API
+  title: Porter Bundle Installations API
   description: The Porter Bundle API provides programmatic access to managing Cloud Native Application Bundles (CNAB) using Porter. It supports listing and inspecting bundles, managing installations, handling credential sets and parameter sets, and querying installation runs and outputs. Porter implements the CNAB spec for packaging applications with their dependencies into distributable installers.
   version: 1.0.0
   contact:
@@ -130,6 +130,54 @@ paths:
         '404':
           description: Installation not found
 components:
+  parameters:
+    name_path:
+      name: name
+      in: path
+      required: true
+      description: Name of the resource.
+      schema:
+        type: string
+    name:
+      name: name
+      in: query
+      required: false
+      description: Filter results by resource name.
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
+    namespace_path:
+      name: namespace
+      in: path
+      required: true
+      description: Porter namespace of the resource.
+      schema:
+        type: string
+    namespace:
+      name: namespace
+      in: query
+      required: false
+      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
+      schema:
+        type: string
+    skip:
+      name: skip
+      in: query
+      required: false
+      description: Number of records to skip for pagination.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
   schemas:
     CreateInstallationRequest:
       type: object
@@ -167,41 +215,6 @@ components:
           type: object
           additionalProperties:
             type: string
-    InstallationStatus:
-      type: object
-      description: Current state of an installation.
-      properties:
-        runID:
-          type: string
-          description: ID of the most recent run.
-        action:
-          type: string
-          description: Most recently executed action.
-          enum:
-          - install
-          - upgrade
-          - invoke
-          - uninstall
-        result:
-          type: string
-          description: Result of the most recent action.
-          enum:
-          - succeeded
-          - failed
-          - running
-          - pending
-          - cancelled
-        bundleReference:
-          type: string
-          description: OCI reference to the bundle used in the most recent run.
-        created:
-          type: string
-          format: date-time
-          description: When the installation was first created.
-        modified:
-          type: string
-          format: date-time
-          description: When the installation status was last updated.
     Installation:
       type: object
       description: A named instance of a bundle that has been installed and is tracked by Porter. Captures the full lifecycle state of a bundle deployment.
@@ -262,6 +275,52 @@ components:
           type: string
           format: date-time
           description: Timestamp when the installation was last updated.
+    InstallationListResponse:
+      type: object
+      description: Paginated list of installations.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Installation'
+        total:
+          type: integer
+          description: Total number of matching installations.
+    InstallationStatus:
+      type: object
+      description: Current state of an installation.
+      properties:
+        runID:
+          type: string
+          description: ID of the most recent run.
+        action:
+          type: string
+          description: Most recently executed action.
+          enum:
+          - install
+          - upgrade
+          - invoke
+          - uninstall
+        result:
+          type: string
+          description: Result of the most recent action.
+          enum:
+          - succeeded
+          - failed
+          - running
+          - pending
+          - cancelled
+        bundleReference:
+          type: string
+          description: OCI reference to the bundle used in the most recent run.
+        created:
+          type: string
+          format: date-time
+          description: When the installation was first created.
+        modified:
+          type: string
+          format: date-time
+          description: When the installation status was last updated.
     PatchInstallationRequest:
       type: object
       description: Request body for partially updating an installation.
@@ -288,65 +347,6 @@ components:
           type: object
           additionalProperties:
             type: string
-    InstallationListResponse:
-      type: object
-      description: Paginated list of installations.
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Installation'
-        total:
-          type: integer
-          description: Total number of matching installations.
-  parameters:
-    name_path:
-      name: name
-      in: path
-      required: true
-      description: Name of the resource.
-      schema:
-        type: string
-    namespace:
-      name: namespace
-      in: query
-      required: false
-      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
-      schema:
-        type: string
-    namespace_path:
-      name: namespace
-      in: path
-      required: true
-      description: Porter namespace of the resource.
-      schema:
-        type: string
-    skip:
-      name: skip
-      in: query
-      required: false
-      description: Number of records to skip for pagination.
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-    name:
-      name: name
-      in: query
-      required: false
-      description: Filter results by resource name.
-      schema:
-        type: string
-    limit:
-      name: limit
-      in: query
-      required: false
-      description: Maximum number of records to return per page.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 500
-        default: 100
   securitySchemes:
     bearerAuth:
       type: http

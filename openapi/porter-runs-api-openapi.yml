@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Porter Bundle Bundles Runs API
+  title: Porter Bundle Runs API
   description: The Porter Bundle API provides programmatic access to managing Cloud Native Application Bundles (CNAB) using Porter. It supports listing and inspecting bundles, managing installations, handling credential sets and parameter sets, and querying installation runs and outputs. Porter implements the CNAB spec for packaging applications with their dependencies into distributable installers.
   version: 1.0.0
   contact:
@@ -86,7 +86,66 @@ paths:
         '404':
           description: Run not found
 components:
+  parameters:
+    name_path:
+      name: name
+      in: path
+      required: true
+      description: Name of the resource.
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
+    run_id:
+      name: run_id
+      in: path
+      required: true
+      description: Unique identifier of the run.
+      schema:
+        type: string
+    namespace_path:
+      name: namespace
+      in: path
+      required: true
+      description: Porter namespace of the resource.
+      schema:
+        type: string
+    skip:
+      name: skip
+      in: query
+      required: false
+      description: Number of records to skip for pagination.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
   schemas:
+    RunListResponse:
+      type: object
+      description: Paginated list of runs.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Run'
+        total:
+          type: integer
+    OutputListResponse:
+      type: object
+      description: List of outputs from a bundle run.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Output'
     Run:
       type: object
       description: A record of a single bundle action execution for an installation, capturing the action taken, parameters and credentials used, result, and timing.
@@ -160,65 +219,6 @@ components:
         runID:
           type: string
           description: ID of the run that produced this output.
-    RunListResponse:
-      type: object
-      description: Paginated list of runs.
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Run'
-        total:
-          type: integer
-    OutputListResponse:
-      type: object
-      description: List of outputs from a bundle run.
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Output'
-  parameters:
-    name_path:
-      name: name
-      in: path
-      required: true
-      description: Name of the resource.
-      schema:
-        type: string
-    namespace_path:
-      name: namespace
-      in: path
-      required: true
-      description: Porter namespace of the resource.
-      schema:
-        type: string
-    run_id:
-      name: run_id
-      in: path
-      required: true
-      description: Unique identifier of the run.
-      schema:
-        type: string
-    skip:
-      name: skip
-      in: query
-      required: false
-      description: Number of records to skip for pagination.
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-    limit:
-      name: limit
-      in: query
-      required: false
-      description: Maximum number of records to return per page.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 500
-        default: 100
   securitySchemes:
     bearerAuth:
       type: http
