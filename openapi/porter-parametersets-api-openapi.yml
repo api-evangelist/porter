@@ -101,18 +101,18 @@ paths:
           description: Parameter set not found
 components:
   parameters:
+    namespace:
+      name: namespace
+      in: query
+      required: false
+      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
+      schema:
+        type: string
     name_path:
       name: name
       in: path
       required: true
       description: Name of the resource.
-      schema:
-        type: string
-    name:
-      name: name
-      in: query
-      required: false
-      description: Filter results by resource name.
       schema:
         type: string
     limit:
@@ -132,11 +132,11 @@ components:
       description: Porter namespace of the resource.
       schema:
         type: string
-    namespace:
-      name: namespace
+    name:
+      name: name
       in: query
       required: false
-      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
+      description: Filter results by resource name.
       schema:
         type: string
     skip:
@@ -149,37 +149,6 @@ components:
         minimum: 0
         default: 0
   schemas:
-    ParameterSet:
-      type: object
-      description: A named collection of parameter mappings that resolve bundle parameter names to their runtime sources, enabling reuse across installations.
-      required:
-      - name
-      - parameters
-      properties:
-        name:
-          type: string
-          description: Name of the parameter set.
-        namespace:
-          type: string
-          description: Porter namespace this parameter set belongs to.
-        parameters:
-          type: array
-          description: List of parameter mappings.
-          items:
-            $ref: '#/components/schemas/ParameterMapping'
-        labels:
-          type: object
-          additionalProperties:
-            type: string
-          description: Labels for categorizing the parameter set.
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp when the parameter set was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp when the parameter set was last updated.
     ParameterMapping:
       type: object
       description: Maps a bundle parameter name to its runtime source.
@@ -211,6 +180,37 @@ components:
         command:
           type: string
           description: Shell command whose stdout provides the value.
+    ParameterSet:
+      type: object
+      description: A named collection of parameter mappings that resolve bundle parameter names to their runtime sources, enabling reuse across installations.
+      required:
+      - name
+      - parameters
+      properties:
+        name:
+          type: string
+          description: Name of the parameter set.
+        namespace:
+          type: string
+          description: Porter namespace this parameter set belongs to.
+        parameters:
+          type: array
+          description: List of parameter mappings.
+          items:
+            $ref: '#/components/schemas/ParameterMapping'
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          description: Labels for categorizing the parameter set.
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the parameter set was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the parameter set was last updated.
     ParameterSetListResponse:
       type: object
       description: Paginated list of parameter sets.

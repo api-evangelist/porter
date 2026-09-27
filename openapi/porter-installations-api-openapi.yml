@@ -131,18 +131,18 @@ paths:
           description: Installation not found
 components:
   parameters:
+    namespace:
+      name: namespace
+      in: query
+      required: false
+      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
+      schema:
+        type: string
     name_path:
       name: name
       in: path
       required: true
       description: Name of the resource.
-      schema:
-        type: string
-    name:
-      name: name
-      in: query
-      required: false
-      description: Filter results by resource name.
       schema:
         type: string
     limit:
@@ -162,11 +162,11 @@ components:
       description: Porter namespace of the resource.
       schema:
         type: string
-    namespace:
-      name: namespace
+    name:
+      name: name
       in: query
       required: false
-      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
+      description: Filter results by resource name.
       schema:
         type: string
     skip:
@@ -179,6 +179,52 @@ components:
         minimum: 0
         default: 0
   schemas:
+    InstallationStatus:
+      type: object
+      description: Current state of an installation.
+      properties:
+        runID:
+          type: string
+          description: ID of the most recent run.
+        action:
+          type: string
+          description: Most recently executed action.
+          enum:
+          - install
+          - upgrade
+          - invoke
+          - uninstall
+        result:
+          type: string
+          description: Result of the most recent action.
+          enum:
+          - succeeded
+          - failed
+          - running
+          - pending
+          - cancelled
+        bundleReference:
+          type: string
+          description: OCI reference to the bundle used in the most recent run.
+        created:
+          type: string
+          format: date-time
+          description: When the installation was first created.
+        modified:
+          type: string
+          format: date-time
+          description: When the installation status was last updated.
+    InstallationListResponse:
+      type: object
+      description: Paginated list of installations.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Installation'
+        total:
+          type: integer
+          description: Total number of matching installations.
     CreateInstallationRequest:
       type: object
       description: Request body for creating a new installation.
@@ -275,52 +321,6 @@ components:
           type: string
           format: date-time
           description: Timestamp when the installation was last updated.
-    InstallationListResponse:
-      type: object
-      description: Paginated list of installations.
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Installation'
-        total:
-          type: integer
-          description: Total number of matching installations.
-    InstallationStatus:
-      type: object
-      description: Current state of an installation.
-      properties:
-        runID:
-          type: string
-          description: ID of the most recent run.
-        action:
-          type: string
-          description: Most recently executed action.
-          enum:
-          - install
-          - upgrade
-          - invoke
-          - uninstall
-        result:
-          type: string
-          description: Result of the most recent action.
-          enum:
-          - succeeded
-          - failed
-          - running
-          - pending
-          - cancelled
-        bundleReference:
-          type: string
-          description: OCI reference to the bundle used in the most recent run.
-        created:
-          type: string
-          format: date-time
-          description: When the installation was first created.
-        modified:
-          type: string
-          format: date-time
-          description: When the installation status was last updated.
     PatchInstallationRequest:
       type: object
       description: Request body for partially updating an installation.

@@ -128,24 +128,24 @@ components:
         minimum: 0
         default: 0
   schemas:
-    RunListResponse:
+    Output:
       type: object
-      description: Paginated list of runs.
+      description: A named output value produced by a bundle action execution.
       properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Run'
-        total:
-          type: integer
-    OutputListResponse:
-      type: object
-      description: List of outputs from a bundle run.
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Output'
+        name:
+          type: string
+          description: Name of the output as defined in the bundle.
+        type:
+          type: string
+          description: JSON Schema type of the output value.
+        sensitive:
+          type: boolean
+          description: Whether the output contains sensitive data.
+        value:
+          description: The output value. Absent for sensitive outputs.
+        runID:
+          type: string
+          description: ID of the run that produced this output.
     Run:
       type: object
       description: A record of a single bundle action execution for an installation, capturing the action taken, parameters and credentials used, result, and timing.
@@ -201,24 +201,24 @@ components:
           type: string
           format: date-time
           description: When the run completed.
-    Output:
+    OutputListResponse:
       type: object
-      description: A named output value produced by a bundle action execution.
+      description: List of outputs from a bundle run.
       properties:
-        name:
-          type: string
-          description: Name of the output as defined in the bundle.
-        type:
-          type: string
-          description: JSON Schema type of the output value.
-        sensitive:
-          type: boolean
-          description: Whether the output contains sensitive data.
-        value:
-          description: The output value. Absent for sensitive outputs.
-        runID:
-          type: string
-          description: ID of the run that produced this output.
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Output'
+    RunListResponse:
+      type: object
+      description: Paginated list of runs.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Run'
+        total:
+          type: integer
   securitySchemes:
     bearerAuth:
       type: http
