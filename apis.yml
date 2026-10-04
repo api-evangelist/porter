@@ -169,6 +169,9 @@ apis:
   - type: JSONSchema
     url: json-schema/porter-manifest-schema.json
 common:
+  - type: CapabilityMap
+    url: capabilities/porter-capability-edges.yml
+    name: Porter Business Capability Map
   - type: IssueTracker
     url: https://github.com/getporter/porter/issues
   - type: Releases

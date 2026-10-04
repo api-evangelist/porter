@@ -1,0 +1,36 @@
+slug: porter
+provider: Porter
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 2
+edges:
+- tag: CredentialSets
+  spec_file: porter-credentialsets-api-openapi.yml
+  capability_id: BC-4210.60
+  capability_id_l1: BC-4210
+  capability_name: Configuration & Secrets Management
+  confidence: 0.72
+  evidence: 'POST /v1/credentialsets  createCredentialSet  Porter Create a credential set; schemas: CredentialMapping,
+    ValueSource'
+  reason: Credential sets map bundle credential names to value sources (secret stores/env), i.e. management
+    of secrets consumed by deployments. Fits Configuration & Secrets Management; not human/developer identity
+    issuance.
+- tag: ParameterSets
+  spec_file: porter-parametersets-api-openapi.yml
+  capability_id: BC-4210.60
+  capability_id_l1: BC-4210
+  capability_name: Configuration & Secrets Management
+  confidence: 0.7
+  evidence: 'POST /v1/parametersets  createParameterSet  Porter Create a parameter set; schemas: ParameterMapping,
+    ValueSource'
+  reason: Parameter sets supply runtime configuration values to bundle installations, mapping parameters
+    to value sources — runtime configuration management for deployments.
