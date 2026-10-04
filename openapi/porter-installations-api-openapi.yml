@@ -167,66 +167,17 @@ components:
           type: object
           additionalProperties:
             type: string
-    Installation:
+    InstallationListResponse:
       type: object
-      description: A named instance of a bundle that has been installed and is tracked by Porter. Captures the full lifecycle state of a bundle deployment.
+      description: Paginated list of installations.
       properties:
-        id:
-          type: string
-          description: Unique identifier for this installation.
-        name:
-          type: string
-          description: Name of the installation, unique within its namespace.
-        namespace:
-          type: string
-          description: Porter namespace this installation belongs to.
-        bundle:
-          type: object
-          description: Reference to the bundle that was installed.
-          properties:
-            repository:
-              type: string
-              description: OCI repository of the bundle.
-            version:
-              type: string
-              description: Version of the bundle installed.
-            digest:
-              type: string
-              description: OCI digest of the bundle image.
-        status:
-          $ref: '#/components/schemas/InstallationStatus'
-        parameters:
-          type: object
-          description: Parameter values provided to the installation.
-          additionalProperties: {}
-        credentialSets:
+        items:
           type: array
-          description: Names of credential sets used by this installation.
           items:
-            type: string
-        parameterSets:
-          type: array
-          description: Names of parameter sets used by this installation.
-          items:
-            type: string
-        labels:
-          type: object
-          additionalProperties:
-            type: string
-          description: Labels for categorizing or filtering this installation.
-        annotations:
-          type: object
-          additionalProperties:
-            type: string
-          description: Annotations for storing arbitrary metadata.
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp when the installation was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp when the installation was last updated.
+            $ref: '#/components/schemas/Installation'
+        total:
+          type: integer
+          description: Total number of matching installations.
     PatchInstallationRequest:
       type: object
       description: Request body for partially updating an installation.
@@ -288,17 +239,66 @@ components:
           type: string
           format: date-time
           description: When the installation status was last updated.
-    InstallationListResponse:
+    Installation:
       type: object
-      description: Paginated list of installations.
+      description: A named instance of a bundle that has been installed and is tracked by Porter. Captures the full lifecycle state of a bundle deployment.
       properties:
-        items:
+        id:
+          type: string
+          description: Unique identifier for this installation.
+        name:
+          type: string
+          description: Name of the installation, unique within its namespace.
+        namespace:
+          type: string
+          description: Porter namespace this installation belongs to.
+        bundle:
+          type: object
+          description: Reference to the bundle that was installed.
+          properties:
+            repository:
+              type: string
+              description: OCI repository of the bundle.
+            version:
+              type: string
+              description: Version of the bundle installed.
+            digest:
+              type: string
+              description: OCI digest of the bundle image.
+        status:
+          $ref: '#/components/schemas/InstallationStatus'
+        parameters:
+          type: object
+          description: Parameter values provided to the installation.
+          additionalProperties: {}
+        credentialSets:
           type: array
+          description: Names of credential sets used by this installation.
           items:
-            $ref: '#/components/schemas/Installation'
-        total:
-          type: integer
-          description: Total number of matching installations.
+            type: string
+        parameterSets:
+          type: array
+          description: Names of parameter sets used by this installation.
+          items:
+            type: string
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          description: Labels for categorizing or filtering this installation.
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
+          description: Annotations for storing arbitrary metadata.
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the installation was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the installation was last updated.
   parameters:
     skip:
       name: skip
@@ -309,11 +309,28 @@ components:
         type: integer
         minimum: 0
         default: 0
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
     name:
       name: name
       in: query
       required: false
       description: Filter results by resource name.
+      schema:
+        type: string
+    namespace:
+      name: namespace
+      in: query
+      required: false
+      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
       schema:
         type: string
     namespace_path:
@@ -328,23 +345,6 @@ components:
       in: path
       required: true
       description: Name of the resource.
-      schema:
-        type: string
-    limit:
-      name: limit
-      in: query
-      required: false
-      description: Maximum number of records to return per page.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 500
-        default: 100
-    namespace:
-      name: namespace
-      in: query
-      required: false
-      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
       schema:
         type: string
   securitySchemes:

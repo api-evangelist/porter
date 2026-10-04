@@ -100,7 +100,77 @@ paths:
         '404':
           description: Parameter set not found
 components:
+  parameters:
+    skip:
+      name: skip
+      in: query
+      required: false
+      description: Number of records to skip for pagination.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
+    name:
+      name: name
+      in: query
+      required: false
+      description: Filter results by resource name.
+      schema:
+        type: string
+    namespace:
+      name: namespace
+      in: query
+      required: false
+      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
+      schema:
+        type: string
+    namespace_path:
+      name: namespace
+      in: path
+      required: true
+      description: Porter namespace of the resource.
+      schema:
+        type: string
+    name_path:
+      name: name
+      in: path
+      required: true
+      description: Name of the resource.
+      schema:
+        type: string
   schemas:
+    ParameterMapping:
+      type: object
+      description: Maps a bundle parameter name to its runtime source.
+      required:
+      - name
+      - source
+      properties:
+        name:
+          type: string
+          description: Name of the bundle parameter this mapping applies to.
+        source:
+          $ref: '#/components/schemas/ValueSource'
+    ParameterSetListResponse:
+      type: object
+      description: Paginated list of parameter sets.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParameterSet'
+        total:
+          type: integer
     ParameterSet:
       type: object
       description: A named collection of parameter mappings that resolve bundle parameter names to their runtime sources, enabling reuse across installations.
@@ -151,76 +221,6 @@ components:
         command:
           type: string
           description: Shell command whose stdout provides the value.
-    ParameterMapping:
-      type: object
-      description: Maps a bundle parameter name to its runtime source.
-      required:
-      - name
-      - source
-      properties:
-        name:
-          type: string
-          description: Name of the bundle parameter this mapping applies to.
-        source:
-          $ref: '#/components/schemas/ValueSource'
-    ParameterSetListResponse:
-      type: object
-      description: Paginated list of parameter sets.
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ParameterSet'
-        total:
-          type: integer
-  parameters:
-    skip:
-      name: skip
-      in: query
-      required: false
-      description: Number of records to skip for pagination.
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-    name:
-      name: name
-      in: query
-      required: false
-      description: Filter results by resource name.
-      schema:
-        type: string
-    namespace_path:
-      name: namespace
-      in: path
-      required: true
-      description: Porter namespace of the resource.
-      schema:
-        type: string
-    name_path:
-      name: name
-      in: path
-      required: true
-      description: Name of the resource.
-      schema:
-        type: string
-    limit:
-      name: limit
-      in: query
-      required: false
-      description: Maximum number of records to return per page.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 500
-        default: 100
-    namespace:
-      name: namespace
-      in: query
-      required: false
-      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
-      schema:
-        type: string
   securitySchemes:
     bearerAuth:
       type: http
