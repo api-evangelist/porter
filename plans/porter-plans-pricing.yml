@@ -54,3 +54,19 @@ notes: >-
   Porter is a CNCF Sandbox project; there is no commercial pricing page,
   no paid plans, and no hosted/managed Porter SaaS to reconcile against.
   Marked reconciled=false to flag that there is nothing to reconcile.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - subscription
+  units:
+  - object
+  plans:
+  - name: Open Source
+    access: freemium
+    model: subscription
+    model_how: derived
+    units:
+    - object
+    periods:
+    - per-use
