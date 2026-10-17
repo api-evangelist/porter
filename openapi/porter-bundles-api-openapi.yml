@@ -70,6 +70,13 @@ paths:
           description: Bundle not found
 components:
   parameters:
+    namespace:
+      name: namespace
+      in: query
+      required: false
+      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
+      schema:
+        type: string
     skip:
       name: skip
       in: query
@@ -79,6 +86,20 @@ components:
         type: integer
         minimum: 0
         default: 0
+    name_path:
+      name: name
+      in: path
+      required: true
+      description: Name of the resource.
+      schema:
+        type: string
+    namespace_path:
+      name: namespace
+      in: path
+      required: true
+      description: Porter namespace of the resource.
+      schema:
+        type: string
     limit:
       name: limit
       in: query
@@ -96,57 +117,29 @@ components:
       description: Filter results by resource name.
       schema:
         type: string
-    namespace:
-      name: namespace
-      in: query
-      required: false
-      description: Porter namespace to scope the query to. Defaults to the current namespace configured in Porter's context.
-      schema:
-        type: string
-    namespace_path:
-      name: namespace
-      in: path
-      required: true
-      description: Porter namespace of the resource.
-      schema:
-        type: string
-    name_path:
-      name: name
-      in: path
-      required: true
-      description: Name of the resource.
-      schema:
-        type: string
   schemas:
-    BundleAction:
+    BundleParameter:
       type: object
-      description: A custom action defined by the bundle.
+      description: A parameter that can be passed to the bundle at execution time.
       properties:
+        type:
+          type: string
+          description: JSON Schema type of the parameter.
         description:
           type: string
-          description: Description of what this action does.
-        modifies:
-          type: boolean
-          description: If true, the action modifies the installation state.
-        stateless:
-          type: boolean
-          description: If true, the action does not require an existing installation.
-    BundleCredential:
-      type: object
-      description: A credential required by the bundle for accessing external resources.
-      properties:
-        description:
-          type: string
-          description: Description of what this credential is used for.
+          description: Description of the parameter's purpose.
         required:
           type: boolean
-          description: Whether the credential is required.
-        path:
-          type: string
-          description: File path where the credential is written inside the bundle container.
-        env:
-          type: string
-          description: Environment variable name where the credential is injected.
+          description: Whether the parameter is required.
+        default:
+          description: Default value for the parameter.
+        sensitive:
+          type: boolean
+          description: If true, the parameter value contains sensitive data.
+        enum:
+          type: array
+          description: Allowed values for the parameter.
+          items: {}
     Bundle:
       type: object
       description: A Cloud Native Application Bundle (CNAB) known to Porter, including its metadata, actions, parameters, credentials, outputs, and dependencies.
@@ -197,6 +190,32 @@ components:
           additionalProperties:
             type: string
           description: Arbitrary labels for the bundle.
+    BundleCredential:
+      type: object
+      description: A credential required by the bundle for accessing external resources.
+      properties:
+        description:
+          type: string
+          description: Description of what this credential is used for.
+        required:
+          type: boolean
+          description: Whether the credential is required.
+        path:
+          type: string
+          description: File path where the credential is written inside the bundle container.
+        env:
+          type: string
+          description: Environment variable name where the credential is injected.
+    BundleDependency:
+      type: object
+      description: A dependency on another bundle that must be installed first.
+      properties:
+        bundle:
+          type: string
+          description: OCI reference to the dependent bundle.
+        version:
+          type: string
+          description: Version constraint for the dependency.
     BundleOutput:
       type: object
       description: An output value produced by the bundle during an action.
@@ -213,38 +232,19 @@ components:
         path:
           type: string
           description: File path inside the bundle container where the output is written.
-    BundleParameter:
+    BundleAction:
       type: object
-      description: A parameter that can be passed to the bundle at execution time.
+      description: A custom action defined by the bundle.
       properties:
-        type:
-          type: string
-          description: JSON Schema type of the parameter.
         description:
           type: string
-          description: Description of the parameter's purpose.
-        required:
+          description: Description of what this action does.
+        modifies:
           type: boolean
-          description: Whether the parameter is required.
-        default:
-          description: Default value for the parameter.
-        sensitive:
+          description: If true, the action modifies the installation state.
+        stateless:
           type: boolean
-          description: If true, the parameter value contains sensitive data.
-        enum:
-          type: array
-          description: Allowed values for the parameter.
-          items: {}
-    BundleDependency:
-      type: object
-      description: A dependency on another bundle that must be installed first.
-      properties:
-        bundle:
-          type: string
-          description: OCI reference to the dependent bundle.
-        version:
-          type: string
-          description: Version constraint for the dependency.
+          description: If true, the action does not require an existing installation.
     BundleListResponse:
       type: object
       description: Paginated list of bundles.

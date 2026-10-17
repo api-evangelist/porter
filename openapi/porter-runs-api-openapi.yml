@@ -86,66 +86,17 @@ paths:
         '404':
           description: Run not found
 components:
-  parameters:
-    skip:
-      name: skip
-      in: query
-      required: false
-      description: Number of records to skip for pagination.
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-    limit:
-      name: limit
-      in: query
-      required: false
-      description: Maximum number of records to return per page.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 500
-        default: 100
-    run_id:
-      name: run_id
-      in: path
-      required: true
-      description: Unique identifier of the run.
-      schema:
-        type: string
-    namespace_path:
-      name: namespace
-      in: path
-      required: true
-      description: Porter namespace of the resource.
-      schema:
-        type: string
-    name_path:
-      name: name
-      in: path
-      required: true
-      description: Name of the resource.
-      schema:
-        type: string
   schemas:
-    Output:
+    RunListResponse:
       type: object
-      description: A named output value produced by a bundle action execution.
+      description: Paginated list of runs.
       properties:
-        name:
-          type: string
-          description: Name of the output as defined in the bundle.
-        type:
-          type: string
-          description: JSON Schema type of the output value.
-        sensitive:
-          type: boolean
-          description: Whether the output contains sensitive data.
-        value:
-          description: The output value. Absent for sensitive outputs.
-        runID:
-          type: string
-          description: ID of the run that produced this output.
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Run'
+        total:
+          type: integer
     Run:
       type: object
       description: A record of a single bundle action execution for an installation, capturing the action taken, parameters and credentials used, result, and timing.
@@ -201,16 +152,6 @@ components:
           type: string
           format: date-time
           description: When the run completed.
-    RunListResponse:
-      type: object
-      description: Paginated list of runs.
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Run'
-        total:
-          type: integer
     OutputListResponse:
       type: object
       description: List of outputs from a bundle run.
@@ -219,6 +160,65 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Output'
+    Output:
+      type: object
+      description: A named output value produced by a bundle action execution.
+      properties:
+        name:
+          type: string
+          description: Name of the output as defined in the bundle.
+        type:
+          type: string
+          description: JSON Schema type of the output value.
+        sensitive:
+          type: boolean
+          description: Whether the output contains sensitive data.
+        value:
+          description: The output value. Absent for sensitive outputs.
+        runID:
+          type: string
+          description: ID of the run that produced this output.
+  parameters:
+    skip:
+      name: skip
+      in: query
+      required: false
+      description: Number of records to skip for pagination.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    name_path:
+      name: name
+      in: path
+      required: true
+      description: Name of the resource.
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
+    run_id:
+      name: run_id
+      in: path
+      required: true
+      description: Unique identifier of the run.
+      schema:
+        type: string
+    namespace_path:
+      name: namespace
+      in: path
+      required: true
+      description: Porter namespace of the resource.
+      schema:
+        type: string
   securitySchemes:
     bearerAuth:
       type: http
