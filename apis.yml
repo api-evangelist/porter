@@ -110,6 +110,8 @@ apis:
   description: Operations for managing credential sets that supply secret values to bundle executions.
   humanURL: https://porter.sh/docs/
   tags:
+  - Credential Sets
+  tags_raw:
   - CredentialSets
   properties:
   - type: OpenAPI
@@ -143,6 +145,8 @@ apis:
     Operations for managing parameter sets that supply configuration values to bundle executions.
   humanURL: https://porter.sh/docs/
   tags:
+  - Parameter Sets
+  tags_raw:
   - ParameterSets
   properties:
   - type: OpenAPI
