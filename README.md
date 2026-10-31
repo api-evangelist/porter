@@ -1,4 +1,4 @@
-# Porter (porter)
+# Porter
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,108 +66,147 @@
 
 A package manager for Kubernetes that uses Cloud Native Application Bundles (CNAB) to package and deploy applications along with their dependencies and configuration.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/porter/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/porter/refs/heads/main/apis.yml)
+**Areas:** Cloud-Native · CNAB · DevOps · Kubernetes · Package Manager
 
-## Scope
+## Porter on APIs.io
 
-- **Type:** Index
+Everything profiled for Porter is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/porter/](https://apis.io/providers/porter/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (7)
 
-- Cloud Native
-- CNAB
-- DevOps
-- Kubernetes
-- Package Manager
+- [Porter Mixins API](https://apis.io/apis/porter/porter-mixins-api/) — Extension interface for building and using mixins, which are the building blocks for authoring Porter bundles. Mixins provide pre-built integrations for…
+- [Porter Plugins API](https://apis.io/apis/porter/porter-plugins-api/) — Plugin interface that allows extending Porter's core functionality, such as storing installation data, credential sets, and parameter sets in external…
+- [Porter Bundles API](https://apis.io/apis/porter/porter-bundles-api/) — Operations for searching, inspecting, and managing CNAB bundles published to OCI registries.
+- [Porter CredentialSets API](https://apis.io/apis/porter/porter-credentialsets-api/) — Operations for managing credential sets that supply secret values to bundle executions.
+- [Porter Installations API](https://apis.io/apis/porter/porter-installations-api/) — Operations for managing bundle installations, including install, upgrade, invoke, and uninstall lifecycle actions.
+- [Porter ParameterSets API](https://apis.io/apis/porter/porter-parametersets-api/) — Operations for managing parameter sets that supply configuration values to bundle executions.
+- [Porter Runs API](https://apis.io/apis/porter/porter-runs-api/) — Operations for querying the history of bundle action executions and their outputs.
 
-## Timestamps
+### Published properties
 
-- **Created:** 2025
-- **Modified:** 2026-05-19
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### Agentic access (1)
 
-### Porter Bundle API
+Which operations an agent can call, which act, and which need a human in the loop.
 
-Core API for authoring, building, distributing, and installing Cloud Native Application Bundles (CNAB) using Porter. Bundles package application artifacts, client tools, configuration, and deployment logic into a single distributable installer that can be run with a single command.
+- [Porter Agentic Access](https://apis.io/agentic-access/porter/porter-agentic-access/)
 
-- **Human URL:** [https://porter.sh/docs/](https://porter.sh/docs/)
-- **Base URL:** `https://porter.sh`
+#### JSON Schema (1)
 
-#### Tags
+The data models the API reads and writes.
 
-- Cloud Native
-- CNAB
-- DevOps
-- Kubernetes
-- Package Manager
+- [Porter Bundle Manifest](https://apis.io/schemas/porter/porter-manifest/)
 
-#### Properties
+#### JSON-LD (1)
 
-- [Documentation](https://porter.sh/docs/)
-- [Getting Started](https://porter.sh/docs/learn/)
-- [OpenAPI](openapi/porter-bundle-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/porter-bundle.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/porter-bundle.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [JSON Schema](json-schema/porter-manifest-schema.json) — [JSON Schema](https://json-schema.org/specification)
+Linked-data contexts for the provider's vocabulary.
 
-### Porter Mixins API
+- [Porter Context](https://apis.io/jsonld/porter/porter-context/)
 
-Extension interface for building and using mixins, which are the building blocks for authoring Porter bundles. Mixins provide pre-built integrations for interacting with tools and services such as Kubernetes, Helm, Terraform, and Docker Compose from within a bundle action.
+#### Collections (6)
 
-- **Human URL:** [https://porter.sh/mixins/](https://porter.sh/mixins/)
-- **Base URL:** `https://porter.sh`
+Postman and Open Collection request collections.
 
-#### Tags
+- [Porter Bundle API](https://apis.io/collections/porter/open-porter-bundle/)
+- [Porter Bundle Bundles API](https://apis.io/collections/porter/open-porter-bundles-api/)
+- [Porter Bundle Bundles CredentialSets API](https://apis.io/collections/porter/open-porter-credentialsets-api/)
+- [Porter Bundle Bundles Installations API](https://apis.io/collections/porter/open-porter-installations-api/)
+- [Porter Bundle Bundles ParameterSets API](https://apis.io/collections/porter/open-porter-parametersets-api/)
+- [Porter Bundle Bundles Runs API](https://apis.io/collections/porter/open-porter-runs-api/)
 
-- CNAB
-- DevOps
-- Extensions
-- Mixins
-- Plugins
+#### Governance rules (1)
 
-#### Properties
+Spectral rulesets for the provider's contracts.
 
-- [Documentation](https://porter.sh/mixins/)
-- [Reference](https://porter.sh/docs/development/dev-a-mixin/)
-- [Postman Collection](collections/porter-bundle.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/porter-bundle.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Porter — jsonschema rules](https://apis.io/rules/porter/porter-jsonschema-spectral-rules/)
 
-### Porter Plugins API
+#### Security (2)
 
-Plugin interface that allows extending Porter's core functionality, such as storing installation data, credential sets, and parameter sets in external systems like cloud storage instead of the local filesystem. Plugins reimplement Porter's default behavior to integrate with enterprise or cloud infrastructure.
+Authentication, trust centre, and vulnerability disclosure.
 
-- **Human URL:** [https://porter.sh/docs/introduction/concepts-and-components/mixins-vs-plugins/](https://porter.sh/docs/introduction/concepts-and-components/mixins-vs-plugins/)
-- **Base URL:** `https://porter.sh`
+- [Porter Authentication](https://apis.io/security/porter/porter-authentication/)
+- [Porter Domain Security](https://apis.io/security/porter/porter-domain-security/)
 
-#### Tags
+#### Plans and pricing (1)
 
-- Cloud Native
-- CNAB
-- DevOps
-- Extensions
-- Plugins
+Published plans, tiers and prices.
 
-#### Properties
+- [Porter Plans Pricing](https://apis.io/plans/porter/porter-plans-pricing/)
 
-- [Documentation](https://porter.sh/docs/introduction/concepts-and-components/mixins-vs-plugins/)
-- [Postman Collection](collections/porter-bundle.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/porter-bundle.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Rate limits (1)
 
-## Common Properties
+Published request limits.
 
-- [LinkedIn](https://www.linkedin.com/company/porterrun)
+- [Porter Rate Limits](https://apis.io/rate-limits/porter/porter-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Porter Finops](https://apis.io/finops/porter/porter-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://porter.sh/)
-- [JSON-LD](json-ld/porter-context.jsonld) — [JSON-LD](https://www.w3.org/TR/json-ld11/)
-- [JSON Schema](json-schema/porter-manifest-schema.json) — [JSON Schema](https://json-schema.org/specification)
 - [Documentation](https://porter.sh/docs/)
-- [Getting Started](https://porter.sh/docs/learn/)
-- [GitHub Organization](https://github.com/getporter)
-- [GitHub Repository](https://github.com/getporter/porter)
-- [Community](https://porter.sh/community/)
-- [Integrations](https://porter.sh/docs/integrations/)
+- [Getting started](https://porter.sh/docs/learn/)
+- [Blog](https://porter.sh/blog/index.xml)
+- [GitHub](https://github.com/getporter)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 41.0** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 48.2 |
+| Contract quality | 57.7 |
+| Contract governance | 9.8 |
+| Operational transparency | 34.2 |
+| Developer ergonomics | 45.2 |
+| Access clarity | 5.3 |
+
+**Agent readiness 20.7** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | — |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | partial |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 16.7** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/porter/](https://apis.io/providers/porter/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Porter: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/porter/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
